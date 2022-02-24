@@ -18,4 +18,6 @@ Then whenever you want to connect to the local runtime do in your terminal:
   ```
 Copy the url link it provides and paste it into the box under Connect->Connect to a local runtime, in the right hand corner of a Colab notebook.
 
+ON FURTHER TESTING THERE ARE FURTHER ISSUES WITH RUNNING SNSCRAPE ON COLAB. I HAVE NO PROBLEM RUNNING THEM LOCALLY IF THIS REMAINS A PROBLEM I WAS ONLY LOOKING INTO THIS FOR THE SAKE OF CONSISTENCY.
+
 All other notebooks which do not require snscrape we should be able to run normally.
