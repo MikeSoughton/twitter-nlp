@@ -46,7 +46,7 @@ Here are the basic instructions that we should need:
   ```
   $ ssh-add <path to private key>
   ```
-  with the default path as `~/.ssh/id_rsa`, and enter the passphrase if you made one. Finally copy the contents of the public key (default path `~/.ssh/id_rsa.pub`), head to your GitHub &rarr; Settings &rarr; SSH and GPG keys &rarr; New SSH key, make a title that makes sense to you, copy the contents of the public key and click Add SSH key. 
+  with the default path as `~/.ssh/id_rsa`, and enter the passphrase if you made one. Finally copy the contents of the public key (default path `~/.ssh/id_rsa.pub`), head to your GitHub &rarr; Settings &rarr; SSH and GPG keys &rarr; New SSH key, make a title that makes sense to you, copy the contents of the public key and click Add SSH key.
 - Cloning the repository: When first downloading this repo, do
   ```
   $ git clone git@github.com:MikeSoughton/twitter-nlp.git
@@ -90,7 +90,7 @@ where at the moment the branch name I used was dev. There should hopefully not b
 
 Okay; so when I came to add, commit and push new changes (without pulling again) I **did** have to add and commit before pushing, so maybe I had already done them before pulling. Or maybe pulling is just weird - this we can figure out in the future.
 
-So once we are up and running, the four commands that we would use are pull, add, commit and push.
+So once we are up and running, the four commands that we would use are pull, add, commit and push. At least for the moment, since this is new to me, I'll keep separate backups somewhere else since git can be scary and you could end up overwriting progress if something goes wrong.
 
 #### Merging
 This is a bit more advanced and is done when... well it's a bit complicated and we won't use it now, but maybe we will use it later.
