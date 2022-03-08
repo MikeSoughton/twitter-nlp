@@ -39,3 +39,30 @@ Here are the basic instructions that we should need:
   $ git clone git@github.com:MikeSoughton/twitter-nlp.git
   ```
   You should only need to do this once.
+- Adding files to be ready to be 'committed': Add a single file with
+  ```
+  git add <file name>
+  ```
+  or add all files with
+  ```
+  git add -A
+  ```
+  or
+  ```
+  git add .
+  ```
+- Committing files: 'Commit' changes, **ready** to be pushed to GitHub with
+  ```
+  git commit -m "Your message describing your changes"
+  ```
+- Pushing changes to GitHub: Push these committed changes to GitHub without
+  ```
+  git push orign <branch name>
+  ```
+  Currently I am pushing to the branch dev but this could be any branch.
+
+Note that whilst I would always do the git add and git commit steps before pushing, I was investigating how to update your local branch with any changes made to the remote branch (the one on GitHub). The command for this is
+```
+git pull --rebase origin <branch name>
+```
+where at the moment the branch name I used was dev. There should hopefully not be any issues with this step but if there are checkout [https://www.atlassian.com/git/tutorials/comparing-workflows](https://www.atlassian.com/git/tutorials/comparing-workflows). The funny thing that I noticed was that after doing this, when I tried adding and committing I was told 'nothing to commit, working tree clean' even though I had made changes locally. This *may* have been because I had previously added and committed changes, but I don't think I did so it's a bit odd. All I had to do was push with `git push orign <branch name>`.
