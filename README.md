@@ -30,15 +30,20 @@ All other notebooks which do not require snscrape we should be able to run norma
 
 Here are some instructions for using git to work on the project on your computer and then push changes back to the GitHub. I have not actually tried working on the same project with multiple people at the same time so the cloning, pulling and merging may take some experimenting to get right. From what I hear it *should* be fairly straightforward as git is designed to handle multiple people working on the same file simultaneously but if there are any problems we can learn from them. How much we use git commands will depend on how much of the project we run locally.
 
-
-
 Here are the basic instructions that we should need:
+
+#### Setting up ssh keys, cloning and changing branches
+
 - Setting up an ssh key: To push changes to GitHub you will need an ssh key pair that will be used to authenticate your account when you make changes.
 - Cloning the repository: When first downloading this repo, do
   ```
   $ git clone git@github.com:MikeSoughton/twitter-nlp.git
   ```
   You should only need to do this once.
+- Changing to a different branch: You can work on different 'branches' with the idea being  that each branch corresponds to a different workflow. For now we will just have a main and a dev branch. To change between branches do 
+
+#### The standard commands to add, commit and push
+
 - Adding files to be ready to be 'committed': Add a single file with
   ```
   git add <file name>
@@ -61,8 +66,22 @@ Here are the basic instructions that we should need:
   ```
   Currently I am pushing to the branch dev but this could be any branch.
 
-Note that whilst I would always do the git add and git commit steps before pushing, I was investigating how to update your local branch with any changes made to the remote branch (the one on GitHub). The command for this is
+Note that whilst I would always do the git add and git commit steps before pushing, I was investigating how to update your local branch with any changes made to the remote branch (the one on GitHub). The command for this is (note that there are alternatives to this that I do not yet fully understand, see for example `git fetch` [https://www.atlassian.com/git/tutorials/syncing/git-fetch](https://www.atlassian.com/git/tutorials/syncing/git-fetch))
 ```
 git pull --rebase origin <branch name>
 ```
 where at the moment the branch name I used was dev. There should hopefully not be any issues with this step but if there are checkout [https://www.atlassian.com/git/tutorials/comparing-workflows](https://www.atlassian.com/git/tutorials/comparing-workflows). The funny thing that I noticed was that after doing this, when I tried adding and committing I was told 'nothing to commit, working tree clean' even though I had made changes locally. This *may* have been because I had previously added and committed changes, but I don't think I did so it's a bit odd. All I had to do was push with `git push orign <branch name>`.
+
+Okay; so when I came to add, commit and push new changes (without pulling again) I **did** have to add and commit before pushing, so maybe I had already done them before pulling. Or maybe pulling is just weird - this we can figure out in the future.
+
+So once we are up and running, the four commands that we would use are pull, add, commit and push.
+
+#### Merging
+This is a bit more advanced and is done when
+
+#### Undo commands
+
+For when you mistakenly add, commit or push and want to undo them:
+- How to undo git add:
+- How to undo git commit:
+- How to undo git push:
