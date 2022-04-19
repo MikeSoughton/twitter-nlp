@@ -1,0 +1,17 @@
+Here is described the meanings and uses of the config files.
+
+tran_bot_classifier_config.json:
+
+versionCfg:
+    managerVersionId: the version of our code, because we want to make it professional ;)
+
+DataCfg:
+    human_tweets_dir: the directory of human tweets
+    human_tweets_file: currently, the specific human tweets file #TODO can change to be a list of human files
+    bot_tweets_dir: the directory of bot tweets
+    bot_tweets_file: either null; if using all bot tweets, or if using a specific selection of datasets; a list of bot 
+tweets to use. If null read_data will read all datasets, if a list read_data will read those specific ones.
+    filter_on_english: if true; use only English tweets, if false; use all tweets
+    reduced_data_size: if null; use the whole dataset or if some integer value; use that many samples in training. 
+This is to reduce the long network training time for testing purposes.
+

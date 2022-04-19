@@ -1,0 +1,1 @@
+from .zucc_bot_classifier import ZuccDestroyer

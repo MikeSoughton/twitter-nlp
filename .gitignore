@@ -47,6 +47,7 @@ Thumbs.db
 *.ipynb_checkpoints/
 
 # Specific folders
+data/
 Covid_example_notebooks/Data_Cleaning/
 notebooks/exploratory_data/
 notebooks/data/

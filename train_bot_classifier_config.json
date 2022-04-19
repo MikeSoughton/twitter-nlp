@@ -1,0 +1,25 @@
+{
+    "versionCfg": {
+		"managerVersionId": "botfinder v1"
+	},
+
+    "DataCfg":{
+        "human_tweets_dir":"data/human_tweets/",
+        "human_tweets_files":"tweets_human_200peruser.csv",
+        "bot_tweets_dir":"data/IRA_tweets/",
+        "bot_tweets_files":["IRAhandle_tweets_1.csv"],
+        "filter_on_english":true,
+        "use_reduced_data":true,
+        "reduced_data_size":20000
+    },
+
+    "VectorisationParams":{
+        "max_features":20000,
+        "max_len":100
+    },
+
+    "ModelCfg":{
+        "model_dir":"models/",
+        "epochs":3
+    }
+}
