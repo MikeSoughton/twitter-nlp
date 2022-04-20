@@ -5,8 +5,6 @@
 from keras.models import Model
 from keras.layers import Dense, Embedding, Input
 from keras.layers import Conv1D, GlobalMaxPool1D, Dropout, concatenate
-from keras.preprocessing import text, sequence
-from keras.callbacks import EarlyStopping, ModelCheckpoint
 
 
 def model(conv_layers = 2, max_dilation_rate = 4, max_features = 20000, max_len = 100):

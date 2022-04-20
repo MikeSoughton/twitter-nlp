@@ -6,7 +6,6 @@ D
 import argparse
 import json
 import zucc
-#import models 
 
 
 def run_bot_classifier():
@@ -19,25 +18,38 @@ def run_bot_classifier():
     human_tweets_files = config["DataCfg"]["human_tweets_files"]
     bot_tweets_dir = config["DataCfg"]["bot_tweets_dir"]
     bot_tweets_files = config["DataCfg"]["bot_tweets_files"]
+    filter_on_english = config["DataCfg"]["filter_on_english"]
+    test_size = config["DataCfg"]["test_size"]
     reduced_data_size = config["DataCfg"]["reduced_data_size"]
     
     # Vectorisation parameters
     max_features = config["VectorisationParams"]["max_features"]
     max_len = config["VectorisationParams"]["max_len"]
 
+    # Model parameters
+    model_dir = config["ModelCfg"]["model_dir"]
+    model_name = config["ModelCfg"]["model_name"]
+    load_weights = config["ModelCfg"]["load_weights"]
+    pretrained_weights_path = config["ModelCfg"]["pretrained_weights_path"]
+    epochs = config["ModelCfg"]["epochs"]
+    batch_size = config["ModelCfg"]["batch_size"]
 
-    print(human_tweets_dir, human_tweets_files, bot_tweets_dir, bot_tweets_files)
-    print(max_features, max_len)
 
-    ZuccDestroyer = zucc.ZuccDestroyer(max_features, max_len)
+    # Initialise the model training class
+    ZuccDestroyer = zucc.ZuccDestroyer()
 
-    #ZuccDestroyer.read_data(human_tweets_dir, bot_tweets_dir, human_tweets_files = human_tweets_files, bot_tweets_files = bot_tweets_files, reduced_data_size = reduced_data_size)
-    #ZuccDestroyer.prepare_data(max_features, max_len)
+    # Data preparations
+    ZuccDestroyer.read_data(filter_on_english, human_tweets_dir, bot_tweets_dir, human_tweets_files = human_tweets_files, bot_tweets_files = bot_tweets_files)
+    ZuccDestroyer.prepare_data(max_features, max_len, test_size, reduced_data_size = reduced_data_size)
 
-    model_name = "solo_cnn"
-    ZuccDestroyer.build_model2(model_name, max_features = max_features, max_len = max_len)
+    # Build the model based on the models found in models/
+    ZuccDestroyer.build_model(model_name, max_features = max_features, max_len = max_len)
+
+    # Train the model
+    ZuccDestroyer.train_model(model_dir, model_name, epochs, batch_size, load_weights, pretrained_weights_path = pretrained_weights_path)
     
-
+    # Optional - test the model
+    ZuccDestroyer.test_model(batch_size = batch_size)
 
 if __name__ == '__main__':
 

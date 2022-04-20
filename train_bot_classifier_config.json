@@ -9,8 +9,8 @@
         "bot_tweets_dir":"data/IRA_tweets/",
         "bot_tweets_files":["IRAhandle_tweets_1.csv"],
         "filter_on_english":true,
-        "use_reduced_data":true,
-        "reduced_data_size":20000
+        "test_size":0.33,
+        "reduced_data_size":200000
     },
 
     "VectorisationParams":{
@@ -20,6 +20,10 @@
 
     "ModelCfg":{
         "model_dir":"models/",
-        "epochs":3
+        "model_name":"solo_cnn",
+        "load_weights":true,
+        "pretrained_weights_path":"weights.hdf5",
+        "epochs":15,
+        "batch_size":512
     }
 }
