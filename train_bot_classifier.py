@@ -36,13 +36,13 @@ def run_bot_classifier():
 
 
     # Initialise the model training class
-    ZuccDestroyer = zucc.ZuccDestroyer()
+    ZuccDestroyer = zucc.ZuccDestroyer() #Rename to ZuccTrainer
 
     # Data preparations
     ZuccDestroyer.read_data(filter_on_english, human_tweets_dir, bot_tweets_dir, human_tweets_files = human_tweets_files, bot_tweets_files = bot_tweets_files)
     ZuccDestroyer.prepare_data(max_features, max_len, test_size, reduced_data_size = reduced_data_size)
 
-    # Build the model based on the models found in models/
+    # Build the model based on the models found in 'models/'
     ZuccDestroyer.build_model(model_name, max_features = max_features, max_len = max_len)
 
     # Train the model
