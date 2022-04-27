@@ -123,7 +123,7 @@ class ZuccDestroyer():
         
 
     def train_model(self, model_dir, model_name, epochs, batch_size, load_weights, pretrained_weights_path = None):
-        
+
         if load_weights is True:
             file_path = model_dir + "checkpoints/" + model_name + "/" + pretrained_weights_path
             self.model.load_weights(file_path)
@@ -137,11 +137,11 @@ class ZuccDestroyer():
                 os.makedirs(model_dir + "checkpoints/" + model_name)
             
             if self.reduced_data_size is not None:
-                file_path = model_dir + "checkpoints/" + model_name + "/{epoch:02d}epochs_" + str(batch_size) + "batch_" + str(self.reduced_data_size) + "reduced_weights.hdf5"
+                file_path = model_dir + "checkpoints/" + model_name + "/{epoch:02d}epochs_" + str(batch_size) + "batch_" + str(self.reduced_data_size) + "reduceddata_weights.hdf5"
             else:
-                file_path = model_dir + "checkpoints/" + model_name + "/{epoch:02d}epochs_" + str(batch_size) + "batch_weights.hdf5"
+                file_path = model_dir + "checkpoints/" + model_name + "/{epoch:02d}epochs_" + str(batch_size) + "batch_fulldata_weights.hdf5"
 
-
+            print(file_path)
             checkpoint = ModelCheckpoint(file_path, monitor='val_loss', verbose=1, save_best_only=True, mode='min')
             early = EarlyStopping(monitor="val_loss", mode="min", patience=20)
 
@@ -162,12 +162,13 @@ class ZuccDestroyer():
         y_pred_rounded = np.round(y_pred)
 
         y_test_decoded = np.argmax(self.y_test, axis=-1)
-        print("Acc", accuracy_score(self.y_test, y_pred_rounded))
+        print("Accuracy:", accuracy_score(self.y_test, y_pred_rounded))
 
         y_pred_rounded_decoded = np.argmax(y_pred_rounded, axis=-1)
         species = np.array(y_test_decoded)
         predictions = np.array(y_pred_rounded_decoded)
         confusion_matrix = confusion_matrix(species, predictions)
 
+        print("Confusion matrix:")
         print(confusion_matrix)
 

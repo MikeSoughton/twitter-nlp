@@ -1,0 +1,15 @@
+{
+    "versionCfg": {
+		"managerVersionId": "botfinder v1"
+	},
+
+    "Mode":2,
+
+    "Mode2Cfg":{
+        "user_ids_dir":"data/verified-2019/",
+        "user_ids_file":"verified-2019.tsv",
+        "data_out_dir":"data/human_tweets/",
+        "data_out_file_desc":"verified_2019",
+        "max_tweets_per_user":200
+    }
+}
