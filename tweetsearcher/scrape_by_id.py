@@ -1,5 +1,5 @@
 """
-
+Download tweets given user ids.
 """
 
 import os
@@ -26,8 +26,7 @@ class GetTweetsById():
         """
         tweets_list = []
         for i, user_id in enumerate(self.user_ids):
-            if i > 5:
-                break
+
             pbar = tqdm(sntwitter.TwitterUserScraper(str(user_id), isUserId = True).get_items())
             try:
                 for j,tweet in enumerate(pbar):
@@ -44,5 +43,4 @@ class GetTweetsById():
         human_tweets_df.reset_index(drop=True, inplace=True)
 
         human_tweets_df.to_csv(data_out_dir + data_out_file_desc + "_" + str(self.max_tweets_per_user) + "peruser.csv")
-        #human_tweets_df.to_csv('data/tweets_human_200peruser.csv')
 

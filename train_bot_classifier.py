@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """
-D
+Code to call the 'zucc' (NAME TO BE CHANGED) class and train the human/bot classifier model. 
 """
 
 import argparse
@@ -36,7 +36,7 @@ def run_bot_classifier():
 
 
     # Initialise the model training class
-    ZuccDestroyer = zucc.ZuccDestroyer() #Rename to ZuccTrainer
+    ZuccDestroyer = zucc.ZuccDestroyer() #Rename to ZuccTrainer #COME UP WITH NEW NAME
 
     # Data preparations
     ZuccDestroyer.read_data(filter_on_english, human_tweets_dir, bot_tweets_dir, human_tweets_files = human_tweets_files, bot_tweets_files = bot_tweets_files)
@@ -48,7 +48,7 @@ def run_bot_classifier():
     # Train the model
     ZuccDestroyer.train_model(model_dir, model_name, epochs, batch_size, load_weights, pretrained_weights_path = pretrained_weights_path)
     
-    # Optional - test the model
+    # Optional - test the model #TODO add optional argument
     ZuccDestroyer.test_model(batch_size = batch_size)
 
 if __name__ == '__main__':

@@ -3,7 +3,22 @@
 		"managerVersionId": "botfinder v1"
 	},
 
-    "Mode":2,
+    "Mode":1,
+
+    "Mode1Cfg":{
+        "DataCfg":{
+            "data_out_dir":"data/scraped_tweets/"
+        },
+
+        "ScrapingCfg":{
+            "keywords":["ukraine russia", "cheese art"],
+            "num_tweets_per_day":100,
+            "start_date":"2022-02-10",
+            "end_date":"2022-02-12",
+            "language":"en",
+            "user_created_after":null
+        }
+    },
 
     "Mode2Cfg":{
         "user_ids_dir":"data/verified-2019/",
