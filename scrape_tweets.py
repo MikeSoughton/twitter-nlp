@@ -13,8 +13,11 @@ def get_tweets_by_keyword():
 
     # Data configurations
     data_out_dir = config["Mode1Cfg"]["DataCfg"]["data_out_dir"]
+    organisations_file_path = config["Mode1Cfg"]["DataCfg"]["organisations_file_path"]
+    prescraped_tweets_df_file_path = config["Mode1Cfg"]["DataCfg"]["prescraped_tweets_df_file_path"]
 
     # Scraping configurations
+    scrape = config["Mode1Cfg"]["ScrapingCfg"]["scrape"]
     keywords = config["Mode1Cfg"]["ScrapingCfg"]["keywords"]
     num_tweets_per_day = config["Mode1Cfg"]["ScrapingCfg"]["num_tweets_per_day"]
     start_date = config["Mode1Cfg"]["ScrapingCfg"]["start_date"]
@@ -26,7 +29,11 @@ def get_tweets_by_keyword():
     GetTweetsByKeyword = tweetsearcher.GetTweetsByKeyword(num_tweets_per_day, start_date, end_date, data_out_dir)
 
     # Download and save tweets
-    GetTweetsByKeyword.scrape_tweets_by_keywords(keywords, lang, user_created_after = user_created_after)
+    if scrape is True:
+        GetTweetsByKeyword.scrape_tweets_by_keywords(keywords, lang, user_created_after = user_created_after)
+
+    # Filter out organisations
+    GetTweetsByKeyword.filter_organisations(organisations_file_path, prescraped_tweets_df_file_path = prescraped_tweets_df_file_path)
 
 
 def get_tweets_by_id():
@@ -46,7 +53,6 @@ def get_tweets_by_id():
 
     # Download and save tweets
     GetTweetsById.download(data_out_dir, data_out_file_desc)
-
     
 
 if __name__ == '__main__':

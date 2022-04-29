@@ -1,9 +1,10 @@
 import glob
 import os
+import io
+import json
 
 import numpy as np 
 import pandas as pd
-import matplotlib.pyplot as plt
 
 import warnings
 warnings.simplefilter(action='ignore', category=FutureWarning) # Tensorflow literally always has warnings!
@@ -95,6 +96,9 @@ class ZuccDestroyer():
         tokenizer = text.Tokenizer(num_words=max_features)
         tokenizer.fit_on_texts(list(list_sentences_train))
 
+        # We will save the tokenizer for later use so make it self here to be saved when we save the model
+        self.tokenizer = tokenizer
+
         # Get the data into padded sequences
         list_tokenized_train = tokenizer.texts_to_sequences(list_sentences_train)
         x = sequence.pad_sequences(list_tokenized_train, maxlen=max_len)
@@ -122,10 +126,10 @@ class ZuccDestroyer():
         self.model.summary()
         
 
-    def train_model(self, model_dir, model_name, epochs, batch_size, load_weights, pretrained_weights_path = None):
+    def train_model(self, model_dir, model_name, data_used_name, epochs, batch_size, load_weights, pretrained_weights_path = None):
 
         if load_weights is True:
-            file_path = model_dir + "checkpoints/" + model_name + "/" + pretrained_weights_path
+            file_path = model_dir + "checkpoints/" + model_name + "/" + data_used_name + "/" + pretrained_weights_path
             self.model.load_weights(file_path)
             print("Loaded model weights from", file_path)
             
@@ -137,9 +141,9 @@ class ZuccDestroyer():
                 os.makedirs(model_dir + "checkpoints/" + model_name)
             
             if self.reduced_data_size is not None:
-                file_path = model_dir + "checkpoints/" + model_name + "/{epoch:02d}epochs_" + str(batch_size) + "batch_" + str(self.reduced_data_size) + "reduceddata_weights.hdf5"
+                file_path = model_dir + "checkpoints/" + model_name + "/" + data_used_name + "/{epoch:02d}epochs_" + str(batch_size) + "batch_" + str(self.reduced_data_size) + "reduceddata_weights.hdf5"
             else:
-                file_path = model_dir + "checkpoints/" + model_name + "/{epoch:02d}epochs_" + str(batch_size) + "batch_fulldata_weights.hdf5"
+                file_path = model_dir + "checkpoints/" + model_name + "/" + data_used_name + "/{epoch:02d}epochs_" + str(batch_size) + "batch_fulldata_weights.hdf5"
 
             print(file_path)
             checkpoint = ModelCheckpoint(file_path, monitor='val_loss', verbose=1, save_best_only=True, mode='min')
@@ -152,6 +156,13 @@ class ZuccDestroyer():
                     validation_split=0.1, 
                     callbacks=callbacks_list)
             #model.load_weights(file_path)
+
+        # Save the tokenizer here. We could have saved it earlier on but now we can save it in the same
+        # path as the model. Note that pickle is more efficient than json but json is nicer and more reliable
+        tokenizer_json = self.tokenizer.to_json()
+        tokenizer_file_path = model_dir + "checkpoints/" + model_name + "/" + data_used_name + "/tokenizer.json"
+        with io.open(tokenizer_file_path, 'w', encoding='utf-8') as f:
+            f.write(json.dumps(tokenizer_json, ensure_ascii=False))
 
     def test_model(self, batch_size = 1024):
         print("Testing model...")

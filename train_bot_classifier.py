@@ -8,7 +8,7 @@ import json
 import zucc
 
 
-def run_bot_classifier():
+def train_bot_classifier():
     # Load main config file
     with open(args.config) as cfg_file:
         config = json.load(cfg_file)
@@ -18,6 +18,7 @@ def run_bot_classifier():
     human_tweets_files = config["DataCfg"]["human_tweets_files"]
     bot_tweets_dir = config["DataCfg"]["bot_tweets_dir"]
     bot_tweets_files = config["DataCfg"]["bot_tweets_files"]
+    data_used_name = config["DataCfg"]["data_used_name"]
     filter_on_english = config["DataCfg"]["filter_on_english"]
     test_size = config["DataCfg"]["test_size"]
     reduced_data_size = config["DataCfg"]["reduced_data_size"]
@@ -46,7 +47,7 @@ def run_bot_classifier():
     ZuccDestroyer.build_model(model_name, max_features = max_features, max_len = max_len)
 
     # Train the model
-    ZuccDestroyer.train_model(model_dir, model_name, epochs, batch_size, load_weights, pretrained_weights_path = pretrained_weights_path)
+    ZuccDestroyer.train_model(model_dir, model_name, data_used_name, epochs, batch_size, load_weights, pretrained_weights_path = pretrained_weights_path)
     
     # Optional - test the model #TODO add optional argument
     ZuccDestroyer.test_model(batch_size = batch_size)
@@ -58,4 +59,4 @@ if __name__ == '__main__':
     parser.add_argument('-c', '--config', type=str, default = 'train_bot_classifier_config.json', help = 'str: train bot classifier configuration file path')
     args = parser.parse_args()
 
-    run_bot_classifier()
+    train_bot_classifier()

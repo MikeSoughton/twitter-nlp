@@ -5,9 +5,10 @@
 
     "DataCfg":{
         "human_tweets_dir":"data/human_tweets/",
-        "human_tweets_files":"tweets_human_200peruser.csv",
+        "human_tweets_files":"verified_2019_200peruser.csv",
         "bot_tweets_dir":"data/IRA_tweets/",
         "bot_tweets_files":["IRAhandle_tweets_1.csv"],
+        "data_used_name":"IRA1_200tweetsperhuman",
         "filter_on_english":true,
         "test_size":0.33,
         "reduced_data_size":null

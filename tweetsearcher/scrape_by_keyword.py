@@ -82,39 +82,63 @@ class GetTweetsByKeyword():
             tweets_df = pd.concat([tweets_df, tweets_day_df])
             tweets_df.reset_index(drop=True, inplace=True)
 
-
-        # Save entire tweet dataframe to csv
-        #tweets_df.to_csv(self.data_out_dir + 'tesssss.csv')
-        # Get the names of the keywords for saved file name
-        #keywords_string = [keyword.replace(' ', '_') for keyword in keywords]
+        # Get the names of the keywords for saved file path name
         keywords_string = '_'.join(keywords)
         keywords_string = keywords_string.replace(' ', '_')
-        #" ".join(text for text in human_tweets.Text)
-        print("keysss", keywords_string)
 
         full_data_out_dir = self.data_out_dir + "/" + keywords_string
 
         if not os.path.exists(full_data_out_dir):
             os.makedirs(full_data_out_dir)
 
-        #tweets_df.to_csv(self.data_out_dir + 'tweets_raw_' + lang + '_df_' + keywords_string + str(num_tweets) + 'dailytweets_' + self.start_date + '_to_' + self.end_date + '.csv')
-        tweets_df.to_csv(full_data_out_dir + '/tweets_raw_' + lang + '_df_' + str(self.num_tweets_per_day) + 'dailytweets_' + self.start_date + '_to_' + self.end_date + '.csv')
-
+        self.tweets_df_file_path = full_data_out_dir + '/tweets_raw_' + lang + '_df_' + str(self.num_tweets_per_day) + 'dailytweets_' + self.start_date + '_to_' + self.end_date + '.csv'
+        tweets_df.to_csv(self.tweets_df_file_path)
 
         self.tweets_df = tweets_df
 
 
-    def filter_organisations(self, organisations_file_path):
+    def filter_organisations(self, organisations_file_path, prescraped_tweets_df_file_path = None):
+        """
+        Filters out organisational accounts by dropping any tweets whose 
+        display name or username contains words in the organisations file.
+        """
 
-        organisations_list = list(np.genfromtxt('organisations.csv',delimiter=',',dtype=str, encoding='utf-8')[:,0])
+        # Here we give the option to load in a preexisting tweets file
+        if prescraped_tweets_df_file_path is not None:
+            tweets_df = pd.read_csv(prescraped_tweets_df_file_path, lineterminator='\n')
+        else:
+            tweets_df = self.tweets_df
+        print(tweets_df)
 
-        tweets_en_df_dropped = tweets_en_df.copy()
+        # First drop any NaN values
+        tweets_df = tweets_df.dropna(subset=['Display Name'], how='all')
+        tweets_df = tweets_df.dropna(subset=['Username'], how='all')
+        print(tweets_df)
+
+        organisations_list = list(np.genfromtxt(organisations_file_path, delimiter=',', dtype=str, encoding='utf-8')[:,0])
+
+        tweets_df_dropped = tweets_df.copy()
         for organisation_name in organisations_list:
-            tweets_en_df_dropped = tweets_en_df_dropped.drop(tweets_en_df_dropped[tweets_en_df_dropped['Display Name'].str.lower().str.contains(str.lower(organisation_name))].index)
-            tweets_en_df_dropped = tweets_en_df_dropped.drop(tweets_en_df_dropped[tweets_en_df_dropped['Username'].str.lower().str.contains(str.lower(organisation_name))].index)
+            tweets_df_dropped = tweets_df_dropped.drop(tweets_df_dropped[tweets_df_dropped['Display Name'].str.lower().str.contains(str.lower(organisation_name))].index)
+            tweets_df_dropped = tweets_df_dropped.drop(tweets_df_dropped[tweets_df_dropped['Username'].str.lower().str.contains(str.lower(organisation_name))].index)
             
-        tweets_en_df = tweets_en_df_dropped.copy()
-        tweets_en_df = tweets_en_df.reset_index(drop=True)
+        tweets_df = tweets_df_dropped.copy()
+        tweets_df = tweets_df.reset_index(drop=True)
+
+        print(tweets_df)
+
+        #TODO Change lang to self.lang so we can replace with 'tweets_' + self.lang + '_df_'
+        # to avoid edge case of a keyword ending in df
+        if prescraped_tweets_df_file_path is not None:
+            tweets_filtered_df_file_path = prescraped_tweets_df_file_path.replace('df_', 'df_individual_')
+        else:
+            tweets_filtered_df_file_path = self.tweets_df_file_path.replace('df_', 'df_individual_')
+
+        print(tweets_filtered_df_file_path)
+
+        tweets_df.to_csv(tweets_filtered_df_file_path)
+
+
 
         
 

@@ -7,10 +7,13 @@
 
     "Mode1Cfg":{
         "DataCfg":{
-            "data_out_dir":"data/scraped_tweets/"
+            "data_out_dir":"data/scraped_tweets/",
+            "organisations_file_path":"data/organisations.csv",
+            "prescraped_tweets_df_file_path":"data/scraped_tweets/ukraine_russia/tweets_raw_en_df_5000dailytweets_2022-02-10_to_2022-03-10.csv"
         },
 
         "ScrapingCfg":{
+            "scrape":false,
             "keywords":["ukraine russia", "cheese art"],
             "num_tweets_per_day":100,
             "start_date":"2022-02-10",
