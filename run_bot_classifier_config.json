@@ -6,7 +6,8 @@
     "DataCfg":{
         "tweets_file_path":"data/scraped_tweets/ukraine_russia/tweets_raw_en_df_individual_5000dailytweets_2022-02-10_to_2022-03-10.csv",
         "tokenizer_file_path":"models/checkpoints/solo_cnn/IRA1_200tweetsperhuman/tokenizer.json",
-        "train_data_used_name":"IRA1_200tweetsperhuman"
+        "train_data_used_name":"IRA1_200tweetsperhuman",
+        "data_out_dir":"data/checked_tweets/"
     },
 
     "VectorisationParams":{
@@ -17,9 +18,7 @@
     "ModelCfg":{
         "model_dir":"models/",
         "model_name":"solo_cnn",
-        "load_weights":true,
         "trained_weights_path":"02epochs_512batch_fulldata_weights.hdf5",
-        "epochs":1,
         "batch_size":512
     }
 }

@@ -17,6 +17,7 @@ def run_bot_classifier():
     tweets_file_path = config["DataCfg"]["tweets_file_path"]
     tokenizer_file_path = config["DataCfg"]["tokenizer_file_path"]
     train_data_used_name = config["DataCfg"]["train_data_used_name"]
+    data_out_dir = config["DataCfg"]["data_out_dir"]
 
     
     # Vectorisation parameters
@@ -26,9 +27,7 @@ def run_bot_classifier():
     # Model parameters
     model_dir = config["ModelCfg"]["model_dir"]
     model_name = config["ModelCfg"]["model_name"]
-    load_weights = config["ModelCfg"]["load_weights"]
     trained_weights_path = config["ModelCfg"]["trained_weights_path"]
-    epochs = config["ModelCfg"]["epochs"]
     batch_size = config["ModelCfg"]["batch_size"]
 
 
@@ -41,7 +40,7 @@ def run_bot_classifier():
 
     RunZucc.build_model(model_name, max_features = max_features, max_len = max_len)
 
-    RunZucc.run_model(model_dir, model_name, train_data_used_name, trained_weights_path, batch_size = batch_size)
+    RunZucc.run_model(model_dir, model_name, train_data_used_name, trained_weights_path, data_out_dir, batch_size = batch_size)
 
 
 
