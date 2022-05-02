@@ -59,7 +59,7 @@ if __name__ == '__main__':
 
     # Just speciffying config file as default arg here
     parser = argparse.ArgumentParser(formatter_class=argparse.RawTextHelpFormatter)
-    parser.add_argument('-c', '--config', type=str, default = 'scrape_tweets_config.json', help = 'str: train bot classifier configuration file path')
+    parser.add_argument('-c', '--config', type=str, default = 'configs/scrape_tweets_config.json', help = 'str: train bot classifier configuration file path')
     parser.add_argument('-m', '--mode', type=int, default = None, help = 'int: mode to use (see config description), default is None and will be taken from config')
     args = parser.parse_args()
 
