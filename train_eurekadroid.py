@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 """
-Code to call the 'zucc' (NAME TO BE CHANGED) class and train the human/bot classifier model. 
+Code to call the TrainEurekaDroid class and train the human/bot classifier model. 
 """
 
 import argparse
 import json
-import zucc
+import eurekadroid
 
 
 def train_bot_classifier():
@@ -37,20 +37,20 @@ def train_bot_classifier():
 
 
     # Initialise the model training class
-    ZuccDestroyer = zucc.ZuccDestroyer() #Rename to ZuccTrainer #COME UP WITH NEW NAME
+    TrainEurekaDroid = eurekadroid.TrainEurekaDroid()
 
     # Data preparations
-    ZuccDestroyer.read_data(filter_on_english, human_tweets_dir, bot_tweets_dir, human_tweets_files = human_tweets_files, bot_tweets_files = bot_tweets_files)
-    ZuccDestroyer.prepare_data(max_features, max_len, test_size, reduced_data_size = reduced_data_size)
+    TrainEurekaDroid.read_data(filter_on_english, human_tweets_dir, bot_tweets_dir, human_tweets_files = human_tweets_files, bot_tweets_files = bot_tweets_files)
+    TrainEurekaDroid.prepare_data(max_features, max_len, test_size, reduced_data_size = reduced_data_size)
 
     # Build the model based on the models found in 'models/'
-    ZuccDestroyer.build_model(model_name, max_features = max_features, max_len = max_len)
+    TrainEurekaDroid.build_model(model_name, max_features = max_features, max_len = max_len)
 
     # Train the model
-    ZuccDestroyer.train_model(model_dir, model_name, data_used_name, epochs, batch_size, load_weights, pretrained_weights_path = pretrained_weights_path)
+    TrainEurekaDroid.train_model(model_dir, model_name, data_used_name, epochs, batch_size, load_weights, pretrained_weights_path = pretrained_weights_path)
     
     # Optional - test the model #TODO add optional argument
-    ZuccDestroyer.test_model(batch_size = batch_size)
+    TrainEurekaDroid.test_model(batch_size = batch_size)
 
 if __name__ == '__main__':
 

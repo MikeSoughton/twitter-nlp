@@ -17,7 +17,7 @@ from sklearn.model_selection import train_test_split
 
 from models import get_model
 
-class ZuccDestroyer():
+class TrainEurekaDroid():
     def __init__(self):
         pass
 

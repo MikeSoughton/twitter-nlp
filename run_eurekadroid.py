@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 """
-Code to call the 'zucc' (NAME TO BE CHANGED) class and run the human/bot classifier model. 
+Code to call the RunEurekaDroid class and run the human/bot classifier model. 
 """
 
 import argparse
 import json
-import zucc
+import eurekadroid
 
 
 def run_bot_classifier():
@@ -32,15 +32,15 @@ def run_bot_classifier():
 
 
     # Initialise the model training class
-    RunZucc = zucc.RunZucc() # #COME UP WITH NEW NAME
+    RunEurekaDroid = eurekadroid.RunEurekaDroid()
 
-    RunZucc.read_data(tweets_file_path)
+    RunEurekaDroid.read_data(tweets_file_path)
 
-    RunZucc.prepare_data(tokenizer_file_path, max_len)
+    RunEurekaDroid.prepare_data(tokenizer_file_path, max_len)
 
-    RunZucc.build_model(model_name, max_features = max_features, max_len = max_len)
+    RunEurekaDroid.build_model(model_name, max_features = max_features, max_len = max_len)
 
-    RunZucc.run_model(model_dir, model_name, train_data_used_name, trained_weights_path, data_out_dir, batch_size = batch_size)
+    RunEurekaDroid.run_model(model_dir, model_name, train_data_used_name, trained_weights_path, data_out_dir, batch_size = batch_size)
 
 
 

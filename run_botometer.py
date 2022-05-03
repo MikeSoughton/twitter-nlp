@@ -5,7 +5,7 @@ Code to run botometer over tweets and obtain the bot scores it predicts.
 
 import argparse
 import json
-import zucc
+import eurekadroid
 
 
 def run_botometer():
@@ -32,7 +32,7 @@ def run_botometer():
     end_point = config["BotometerCfg"]["end_point"]
 
     # Initialise
-    RunBotometer = zucc.RunBotometer(botometer_max_limit, bot_check_count)
+    RunBotometer = eurekadroid.RunBotometer(botometer_max_limit, bot_check_count)
 
     # Read data
     if restore_checkpoints is True:
