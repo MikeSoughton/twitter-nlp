@@ -1,3 +1,4 @@
+import enum
 import os
 import json
 import botometer
@@ -20,18 +21,32 @@ class RunBotometer():
         # Drop any NaN values if they exist
         self.tweets_df = self.tweets_df.dropna(subset=['Username'], how='all')
         #self.tweets_df = self.tweets_df.dropna(subset=['Text'], how='all')
+        #self.tweets_df = self.tweets_df.reset_index(drop=True) # Can be used if desired
 
 
-    def get_accounts(self):
+    def get_accounts(self, fill_duplicates = False):
         print("Getting accounts...")
         """
-        Simply gets the accounts into a list which can be fed into botometer
+        Simply gets the accounts into a list which can be fed into botometer.
+        If fill_duplicates = True, give each duplicate account in the dataset
+        an empty value of ''. This is only really useful for when running over
+        the training dataset.
         """
         self.accounts = self.tweets_df["Username"].copy().to_numpy()
 
         # Botometer requires the @ symbol
         for idx,account in enumerate(self.accounts):
             self.accounts[idx] = "@" + account
+
+        # Fill duplicate accounts with empty string - these will be ignored by the if statement in run_botometer
+        if fill_duplicates is True:
+            seen = set()
+            for idx, account in enumerate(self.accounts):
+                if account in seen:
+                    self.accounts[idx] = ''
+                else:
+                    seen.add(account)
+
 
     def setup_botometer(self, twitter_api_keys_config, rapid_api_keys_config):
         print("Setting up botometer...")
@@ -83,26 +98,47 @@ class RunBotometer():
             os.makedirs(data_out_dir + keywords_dir + "/botometer_checkpoints")
 
         # Run botometer, looping over all accounts in the accounts list
-        for idx, (screen_name, result) in enumerate(self.bom.check_accounts_in(self.accounts[start_point:])):
-            print(idx, idx + start_point, start_point, self.accounts[start_point])
 
-            try:
-                #print(result)
-                self.tweets_df.loc[idx + start_point, "Astroturf"] = result['raw_scores']['english']['astroturf']
-                self.tweets_df.loc[idx + start_point, "Fake follower"] = result['raw_scores']['english']['fake_follower']
-                self.tweets_df.loc[idx + start_point, "Financial"] = result['raw_scores']['english']['financial']
-                self.tweets_df.loc[idx + start_point, "Other"] = result['raw_scores']['english']['other']
-                self.tweets_df.loc[idx + start_point, "Overall"] = result['raw_scores']['english']['overall']
-                self.tweets_df.loc[idx + start_point, "Self declared"] = result['raw_scores']['english']['self_declared']
-                self.tweets_df.loc[idx + start_point, "Spammer"] = result['raw_scores']['english']['spammer']
-                self.tweets_df.loc[idx + start_point, "Cap"] = result['cap']['english']
-            except KeyError:
-                if "User not found" in result["error"]:
-                    print("User account not found, passing")
-                else:
-                    print("Unexpected error")
+        #TODO This line is an alternative way of looping, but offers less flexibility. Delete when the current method is tested
+        #for idx, (screen_name, result) in enumerate(self.bom.check_accounts_in(self.accounts[start_point:])):
+        for idx, account in enumerate(self.accounts[start_point:]):
+            #print(result)
+            print(idx, idx + start_point, account)
+            import tweepy
+            if account != '':
+                try:
+                    result = self.bom.check_account(account)
+                except tweepy.error.TweepError as e:
+                    if "User not found" in str(e):
+                        print("User account not found, passing")
+                    else:
+                        print("Unexpected error")
 
-            if (idx > 0) & ((idx - 1) % checkpoints == 0):
+                try:
+                    #print(result)
+                    self.tweets_df.loc[idx + start_point, "Astroturf"] = result['raw_scores']['english']['astroturf']
+                    self.tweets_df.loc[idx + start_point, "Fake follower"] = result['raw_scores']['english']['fake_follower']
+                    self.tweets_df.loc[idx + start_point, "Financial"] = result['raw_scores']['english']['financial']
+                    self.tweets_df.loc[idx + start_point, "Other"] = result['raw_scores']['english']['other']
+                    self.tweets_df.loc[idx + start_point, "Overall"] = result['raw_scores']['english']['overall']
+                    self.tweets_df.loc[idx + start_point, "Self declared"] = result['raw_scores']['english']['self_declared']
+                    self.tweets_df.loc[idx + start_point, "Spammer"] = result['raw_scores']['english']['spammer']
+                    self.tweets_df.loc[idx + start_point, "Cap"] = result['cap']['english']
+                except KeyError:
+                    if "User not found" in result["error"]:
+                        print("User account not found, passing2")
+                    else:
+                        print("Unexpected error2")
+
+                # Our saftey net will break if we reach the max daily limit
+                #TODO you could put another statement here to wait until the next day without breaking
+                # and continue then, but I'd rather not and run it manually
+                if self.botometer_check_count == (self.botometer_max_limit - 1):
+                    print("Reached max daily limit on bot checks, stopping")
+                    break
+                self.botometer_check_count += 1
+
+            if (idx > 1) & ((idx - 1) % checkpoints == 0):
                 self.tweets_df.to_csv(data_out_dir + keywords_dir + "/botometer_checkpoints/" + data_file_name + '_botometer_' + str(idx + start_point) + 'checkpoint.csv')
                 print("Saved tweets checkpoint with botometer scores with " + str(idx + start_point) + " accounts checked")
 
@@ -110,17 +146,10 @@ class RunBotometer():
                 print("Reached end point of" + str(end_point), ", breaking.")
                 break
 
-            # Our saftey net will break if we reach the max daily limit
-            #TODO you could put another statement here to wait until the next day without breaking
-            # and continue then, but I'd rather not when using real money
-            if self.botometer_check_count == (self.botometer_max_limit - 1):
-                print("Reached max daily limit on bot checks, stopping")
-                break
-            self.botometer_check_count += 1
+            
 
         print(self.tweets_df)
 
-        #self.tweets_df.to_csv(data_out_dir + keywords_dir + "/botometer_checkpoints/" + data_file_name.replace('.csv', '_botometer_' + str(end_point) + 'endpoint.csv'))
         self.tweets_df.to_csv(data_out_dir + keywords_dir + "/botometer_checkpoints/" + data_file_name + '_botometer_' + str(end_point) + 'endpoint.csv')
         print("Saved tweets with classifier bot scores to", str(data_out_dir + keywords_dir + "/botometer_checkpoints/" + data_file_name + '_botometer_' + str(end_point) + 'endpoint.csv'))
         

@@ -17,7 +17,7 @@ from sklearn.model_selection import train_test_split
 
 from models import get_model
 
-class RunEurekaDroid():
+class RunBotAegis():
     def __init__(self):
         pass
 
@@ -66,7 +66,6 @@ class RunEurekaDroid():
 
         # Save dataframe
         self.tweets_df['Bot scores'] = y_pred_decoded
-        #tweets_df = pd.read_csv('tttt.csv')
 
         #TODO assumes data saved in data/scraped_tweets/<keywords>/
         keywords_dir = self.tweets_file_path.split("/")[2]
@@ -74,8 +73,8 @@ class RunEurekaDroid():
         if not os.path.exists(data_out_dir + keywords_dir):
             os.makedirs(data_out_dir + keywords_dir)
         
-        self.tweets_df.to_csv(data_out_dir + keywords_dir + "/" + data_file_name.replace('.csv', '_classi.csv'))
-        print("Saved tweets with classifier bot scores to", str(data_out_dir + keywords_dir + "/" + data_file_name.replace('.csv', '_classi.csv')))
+        self.tweets_df.to_csv(data_out_dir + keywords_dir + "/" + data_file_name.replace('.csv', '_botaegis.csv'))
+        print("Saved tweets with classifier bot scores to", str(data_out_dir + keywords_dir + "/" + data_file_name.replace('.csv', '_botaegis.csv')))
 
 
         # My experimenting - delete after it is saved elsewhere:

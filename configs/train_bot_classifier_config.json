@@ -23,7 +23,7 @@
         "model_dir":"models/",
         "model_name":"solo_cnn",
         "load_weights":true,
-        "pretrained_weights_path":"01epochs_512batch_fulldata_weights.hdf5",
+        "pretrained_weights_path":"02epochs_512batch_fulldata_weights.hdf5",
         "epochs":1,
         "batch_size":512
     }

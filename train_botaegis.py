@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 """
-Code to call the TrainEurekaDroid class and train the human/bot classifier model. 
+Code to call the TrainBotAegis class and train the human/bot classifier model. 
 """
 
 import argparse
 import json
-import eurekadroid
+import botaegis
 
 
 def train_bot_classifier():
@@ -37,20 +37,20 @@ def train_bot_classifier():
 
 
     # Initialise the model training class
-    TrainEurekaDroid = eurekadroid.TrainEurekaDroid()
+    TrainBotAegis = botaegis.TrainBotAegis()
 
     # Data preparations
-    TrainEurekaDroid.read_data(filter_on_english, human_tweets_dir, bot_tweets_dir, human_tweets_files = human_tweets_files, bot_tweets_files = bot_tweets_files)
-    TrainEurekaDroid.prepare_data(max_features, max_len, test_size, reduced_data_size = reduced_data_size)
+    TrainBotAegis.read_data(filter_on_english, human_tweets_dir, bot_tweets_dir, human_tweets_files = human_tweets_files, bot_tweets_files = bot_tweets_files)
+    TrainBotAegis.prepare_data(max_features, max_len, test_size, reduced_data_size = reduced_data_size)
 
     # Build the model based on the models found in 'models/'
-    TrainEurekaDroid.build_model(model_name, max_features = max_features, max_len = max_len)
+    TrainBotAegis.build_model(model_name, max_features = max_features, max_len = max_len)
 
     # Train the model
-    TrainEurekaDroid.train_model(model_dir, model_name, data_used_name, epochs, batch_size, load_weights, pretrained_weights_path = pretrained_weights_path)
+    TrainBotAegis.train_model(model_dir, model_name, data_used_name, epochs, batch_size, load_weights, pretrained_weights_path = pretrained_weights_path)
     
     # Optional - test the model #TODO add optional argument
-    TrainEurekaDroid.test_model(batch_size = batch_size)
+    TrainBotAegis.test_model(batch_size = batch_size)
 
 if __name__ == '__main__':
 

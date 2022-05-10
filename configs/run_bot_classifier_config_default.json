@@ -4,7 +4,7 @@
 	},
 
     "DataCfg":{
-        "tweets_file_path":"data/checked_tweets/verified_reddit_latin_10peruser/verified_reddit_latin_134144-144144_10peruser_botometer.csv",
+        "tweets_file_path":"data/scraped_tweets/ukraine_russia/tweets_raw_en_df_individual_5000dailytweets_2022-02-10_to_2022-03-10.csv",
         "tokenizer_file_path":"models/checkpoints/solo_cnn/IRA1_200tweetsperhuman/tokenizer.json",
         "train_data_used_name":"IRA1_200tweetsperhuman",
         "data_out_dir":"data/checked_tweets/"

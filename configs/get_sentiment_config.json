@@ -5,9 +5,9 @@
 
     "DataCfg":{
         "restore_checkpoints":false,
-        "raw_tweets_dir":"data/human_tweets/",
-        "tweets_file_name_desc":"verified_reddit_latin_134144-144144_10peruser",
-        "checkpoints_tweets_dir":"data/checked_tweets/verified_reddit_latin_10peruser/botometer_checkpoints/",
+        "raw_tweets_dir":"data/scraped_tweets/ukraine_russia/",
+        "tweets_file_name_desc":"tweets_raw_en_df_individual_5000dailytweets_2022-02-10_to_2022-03-10",
+        "checkpoints_tweets_dir":"data/checked_tweets/ukraine_russia/botometer_checkpoints/",
         "data_out_dir":"data/checked_tweets/"
     },
 

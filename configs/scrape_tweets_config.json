@@ -13,8 +13,8 @@
         },
 
         "ScrapingCfg":{
-            "scrape":false,
-            "keywords":["ukraine russia", "cheese art"],
+            "scrape":true,
+            "keywords":["ukraine russia"],
             "num_tweets_per_day":100,
             "start_date":"2022-02-10",
             "end_date":"2022-02-12",
@@ -24,10 +24,11 @@
     },
 
     "Mode2Cfg":{
-        "user_ids_dir":"data/verified-2019/",
-        "user_ids_file":"verified-2019.tsv",
+        "user_ids_dir":"data/verified-reddit/",
+        "user_ids_file":"verified_reddit_latin.csv",
         "data_out_dir":"data/human_tweets/",
-        "data_out_file_desc":"verified_2019",
-        "max_tweets_per_user":200
+        "data_out_file_desc":"verified_reddit_latin_134144-144144",
+        "max_tweets_per_user":10,
+        "language":"en"
     }
 }

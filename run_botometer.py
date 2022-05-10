@@ -5,7 +5,7 @@ Code to run botometer over tweets and obtain the bot scores it predicts.
 
 import argparse
 import json
-import eurekadroid
+import botaegis
 
 
 def run_botometer():
@@ -30,9 +30,10 @@ def run_botometer():
     checkpoints = config["BotometerCfg"]["checkpoints"]
     start_point = config["BotometerCfg"]["start_point"]
     end_point = config["BotometerCfg"]["end_point"]
+    fill_duplicates = config["BotometerCfg"]["fill_duplicates"]
 
     # Initialise
-    RunBotometer = eurekadroid.RunBotometer(botometer_max_limit, bot_check_count)
+    RunBotometer = botaegis.RunBotometer(botometer_max_limit, bot_check_count)
 
     # Read data
     if restore_checkpoints is True:
@@ -46,7 +47,7 @@ def run_botometer():
     RunBotometer.read_data(tweets_file_path)
 
     # Get accounts list
-    RunBotometer.get_accounts()
+    RunBotometer.get_accounts(fill_duplicates)
 
     # Setup botometer
     RunBotometer.setup_botometer(twitter_api_keys_config, rapid_api_keys_config)

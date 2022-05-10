@@ -44,6 +44,7 @@ def get_tweets_by_id():
     data_out_dir = config["Mode2Cfg"]["data_out_dir"]
     data_out_file_desc = config["Mode2Cfg"]["data_out_file_desc"]
     max_tweets_per_user = config["Mode2Cfg"]["max_tweets_per_user"]
+    lang = config["Mode2Cfg"]["language"]
 
     # Initialise the tweet scraper class
     GetTweetsById = tweetsearcher.GetTweetsById(max_tweets_per_user)
@@ -52,7 +53,7 @@ def get_tweets_by_id():
     GetTweetsById.load_ids(user_ids_dir, user_ids_file)
 
     # Download and save tweets
-    GetTweetsById.download(data_out_dir, data_out_file_desc)
+    GetTweetsById.download(lang, data_out_dir, data_out_file_desc)
     
 
 if __name__ == '__main__':
