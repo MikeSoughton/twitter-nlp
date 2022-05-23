@@ -1,0 +1,22 @@
+{
+    "versionCfg": {
+		"managerVersionId": "botfinder v1"
+	},
+
+    "DataCfg":{
+        "tweets_dir":"data/checked_tweets/ukraine_russia/",
+        "tweets_in_file_name_desc":"tweets_raw_en_df_individual_5000dailytweets_2022-02-10_to_2022-03-10_botometer_botaegis",
+        "data_out_dir":"data/analysed_tweets/",
+        "sentiment_tweets_out_file_name_desc":"tweets_raw_en_df_individual_5000dailytweets_2022-02-10_to_2022-03-10_sentiment",
+        "LDA_tweets_in_file_path":"data/analysed_tweets/ukraine_russia/tweets_raw_en_df_individual_5000dailytweets_2022-02-10_to_2022-03-10_sentiment.csv",
+        "LDA_tweets_out_file_name_desc":"tweets_raw_en_df_individual_5000dailytweets_2022-02-10_to_2022-03-10_sentimentLDA"
+
+    },
+
+    "SentimentCfg":{
+        "get_sentiment":true,
+        "run_LDA":true,
+        "bot_threshold":0.75,
+        "num_LDA_topics":20
+    }
+}

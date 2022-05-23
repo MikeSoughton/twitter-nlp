@@ -14,6 +14,7 @@ def get_tweets_by_keyword():
     # Data configurations
     data_out_dir = config["Mode1Cfg"]["DataCfg"]["data_out_dir"]
     organisations_file_path = config["Mode1Cfg"]["DataCfg"]["organisations_file_path"]
+    human_names_file_path = config["Mode1Cfg"]["DataCfg"]["human_names_file_path"]
     prescraped_tweets_df_file_path = config["Mode1Cfg"]["DataCfg"]["prescraped_tweets_df_file_path"]
 
     # Scraping configurations
@@ -34,6 +35,9 @@ def get_tweets_by_keyword():
 
     # Filter out organisations
     GetTweetsByKeyword.filter_organisations(organisations_file_path, prescraped_tweets_df_file_path = prescraped_tweets_df_file_path)
+
+    # Filter out users without human names
+    GetTweetsByKeyword.filter_by_names(human_names_file_path, prescraped_tweets_df_file_path = prescraped_tweets_df_file_path)
 
 
 def get_tweets_by_id():

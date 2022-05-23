@@ -115,7 +115,8 @@ class GetTweetsByKeyword():
         tweets_df = tweets_df.dropna(subset=['Username'], how='all')
         print(tweets_df)
 
-        organisations_list = list(np.genfromtxt(organisations_file_path, delimiter=',', dtype=str, encoding='utf-8')[:,0])
+        organisations_list = list(np.genfromtxt(organisations_file_path, delimiter=',', dtype=str, encoding='utf-8'))
+        print(organisations_list)
 
         tweets_df_dropped = tweets_df.copy()
         for organisation_name in organisations_list:
@@ -129,6 +130,58 @@ class GetTweetsByKeyword():
 
         #TODO Change lang to self.lang so we can replace with 'tweets_' + self.lang + '_df_'
         # to avoid edge case of a keyword ending in df
+        if prescraped_tweets_df_file_path is not None:
+            tweets_filtered_df_file_path = prescraped_tweets_df_file_path.replace('df_', 'df_individual_')
+        else:
+            tweets_filtered_df_file_path = self.tweets_df_file_path.replace('df_', 'df_individual_')
+
+        print(tweets_filtered_df_file_path)
+
+        tweets_df.to_csv(tweets_filtered_df_file_path)
+
+    def filter_by_names(self, human_names_file_path, prescraped_tweets_df_file_path = None):
+        # Here we give the option to load in a preexisting tweets file
+        if prescraped_tweets_df_file_path is not None:
+            tweets_df = pd.read_csv(prescraped_tweets_df_file_path, lineterminator='\n')
+        else:
+            tweets_df = self.tweets_df
+
+        # First drop any NaN values
+        tweets_df = tweets_df.dropna(subset=['Display Name'], how='all')
+        tweets_df = tweets_df.dropna(subset=['Username'], how='all')
+
+        # Filter by human names - since there are so many organisations in this dataset
+        # we could not possibly hope to filter them all. Instead do it the other way around
+        with open(human_names_file_path, encoding="utf8", errors='ignore') as f:
+            lines = f.readlines()
+
+        # Names file - I found this one, which includes names from many cultures
+        # But it may have been better just to use English ones to avoid cases like 'You' being included
+        # and so not filtering out things like 'youtube'. These are finge cases though
+        names_list = []
+        import string
+        for idx, line in enumerate(lines[362:]): # This file is so weirdly laid out, really!
+            #print(line[3:].split(' ')[0])
+            name = line[3:].split(' ')[0]
+            char_set = string.ascii_letters
+            if all((True if x in char_set else False for x in name)) is True:
+                names_list.append(name)
+        print(tweets_df)
+
+        # It takes too much memory to loop through the dataset and drop line-by-line. This line is much faster
+        name_mask = tweets_df['Display Name'].str.lower().str.split(' ').str[0].isin([x.lower() for x in names_list])
+        # Could filter out usenames too, but many people have funny usernames not containing their actual name
+        #name_mask = tweets_df['Username'].str.lower().str.split(' ').str[0].isin([x.lower() for x in names_list])
+
+
+        tweets_df = tweets_df[name_mask]
+
+        tweets_df = tweets_df.reset_index(drop=True)
+
+        print(tweets_df)
+
+        #TODO Change lang to self.lang so we can replace with 'tweets_' + self.lang + '_df_'
+        # to avoid edge case of a keyword ending in df (although no English words do!)
         if prescraped_tweets_df_file_path is not None:
             tweets_filtered_df_file_path = prescraped_tweets_df_file_path.replace('df_', 'df_individual_')
         else:

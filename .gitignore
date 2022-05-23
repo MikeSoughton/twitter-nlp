@@ -49,7 +49,6 @@ Thumbs.db
 # Specific folders
 data/
 misc/
-Covid_example_notebooks/Data_Cleaning/
 notebooks/exploratory_data/
 notebooks/data/
 models/checkpoints/

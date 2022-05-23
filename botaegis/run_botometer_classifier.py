@@ -145,7 +145,11 @@ class RunBotometer():
             if (idx + start_point) == end_point:
                 print("Reached end point of" + str(end_point), ", breaking.")
                 break
-
+            
+            #TODO this statement is not yet tested
+            if (idx + start_point) == self.tweets_df.shape[0]:
+                print("Finished running over file, ending")
+                break
             
 
         print(self.tweets_df)

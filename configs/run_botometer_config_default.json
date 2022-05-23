@@ -5,8 +5,8 @@
 
     "DataCfg":{
         "restore_checkpoints":true,
-        "raw_tweets_dir":"data/scraped_tweets/ukraine_russia/",
-        "tweets_file_name_desc":"tweets_raw_en_df_individual_5000dailytweets_2022-02-10_to_2022-03-10",
+        "raw_tweets_dir":"data/checked_tweets/ukraine_russia/",
+        "tweets_file_name_desc":"tweets_raw_en_df_individual_5000dailytweets_2022-02-10_to_2022-03-10_botometer",
         "checkpoints_tweets_dir":"data/checked_tweets/ukraine_russia/botometer_checkpoints/",
         "data_out_dir":"data/checked_tweets/"
     },
