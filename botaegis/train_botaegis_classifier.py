@@ -1,3 +1,4 @@
+import dis
 import glob
 import os
 import io
@@ -21,7 +22,23 @@ class TrainBotAegis():
     def __init__(self):
         pass
 
-    def read_data(self, filter_on_english, human_tweets_dir, bot_tweets_dir, human_tweets_files = None, bot_tweets_files = None):
+    def read_twibot_data(self, twibot_data_file_path):
+        print("Reading in data...")
+        with open(twibot_data_file_path) as f:
+            file = json.load(f)
+        
+        # Get the tweets of human and bot accounts
+        # We will do this for train, test and val (dev) data here. We will do our own train/test split later
+        human_tweets, bot_tweets = get_twibot_cat_tweets(file)
+
+        self.human_tweets = human_tweets
+        self.bot_tweets = bot_tweets
+        print(human_tweets)
+        print(len(human_tweets), len(bot_tweets))
+
+        human_tweets.to_csv('aa.csv')
+
+    def read_IRA_data(self, filter_on_english, human_tweets_dir, bot_tweets_dir, human_tweets_files = None, bot_tweets_files = None):
         print("Reading in data...")
 
         """
@@ -35,7 +52,7 @@ class TrainBotAegis():
         be read in in a similar fashion.
         """
 
-        russian_troll_tweets = None
+        bot_tweets = None
         if bot_tweets_files is None:
             IRA_files = glob.glob(bot_tweets_dir + "*.csv")
             print(IRA_files)
@@ -47,49 +64,49 @@ class TrainBotAegis():
                 df = pd.read_csv(filename, index_col=None, header=0)
                 li.append(df)
 
-            russian_troll_tweets = pd.concat(li, axis=0, ignore_index=True)
+            bot_tweets = pd.concat(li, axis=0, ignore_index=True)
 
         elif bot_tweets_files is not None and len(bot_tweets_files) > 1:
-            russian_troll_tweets = None
+            bot_tweets = None
             for filename in sorted(os.listdir(bot_tweets_dir)):
                 if filename in bot_tweets_files:
                     print(filename)
-                    russian_troll_tweets_i = pd.read_csv(bot_tweets_dir + filename)
-                    if russian_troll_tweets is not None:
-                        russian_troll_tweets = pd.concat([russian_troll_tweets, russian_troll_tweets_i])
+                    bot_tweets_i = pd.read_csv(bot_tweets_dir + filename)
+                    if bot_tweets is not None:
+                        bot_tweets = pd.concat([bot_tweets, bot_tweets_i])
                     else:
-                        russian_troll_tweets = russian_troll_tweets_i
+                        bot_tweets = bot_tweets_i
                         
         elif bot_tweets_files is not None and len(bot_tweets_files) == 1:
-            russian_troll_tweets = pd.read_csv(bot_tweets_dir + bot_tweets_files[0])
+            bot_tweets = pd.read_csv(bot_tweets_dir + bot_tweets_files[0])
 
-        self.russian_troll_tweets = russian_troll_tweets #TODO is it more efficient to define this above?
+        self.bot_tweets = bot_tweets #TODO is it more efficient to define this above?
 
         # Human tweets 
         #TODO Can make this dynamic as above if applicable
         self.human_tweets = pd.read_csv(human_tweets_dir + human_tweets_files) 
 
         # If there are NaN value problems filter them out
-        self.russian_troll_tweets = self.russian_troll_tweets.dropna(subset=self.russian_troll_tweets.select_dtypes(float).columns, how='all')        
-        self.russian_troll_tweets.reset_index(drop=True, inplace=True)
+        self.bot_tweets = self.bot_tweets.dropna(subset=self.bot_tweets.select_dtypes(float).columns, how='all')        
+        self.bot_tweets.reset_index(drop=True, inplace=True)
 
         self.human_tweets = self.human_tweets.dropna(subset=['Text'], how='all')
         self.human_tweets.reset_index(drop=True, inplace=True)
 
         # Filtering English tweets
-        print(self.russian_troll_tweets.shape, self.human_tweets.shape)
+        print(self.bot_tweets.shape, self.human_tweets.shape)
         if filter_on_english is True:
-            self.russian_troll_tweets = russian_troll_tweets.drop(self.russian_troll_tweets[~self.russian_troll_tweets['language'].str.contains('English')].index)
+            self.bot_tweets = bot_tweets.drop(self.bot_tweets[~self.bot_tweets['language'].str.contains('English')].index)
             #TODO investigate why I need na=False here since no NaNs are found in the human dataset
             self.human_tweets = self.human_tweets.drop(self.human_tweets[~self.human_tweets['Language'].str.contains('en', na=False)].index)
-        print(self.russian_troll_tweets.shape, self.human_tweets.shape)
+        print(self.bot_tweets.shape, self.human_tweets.shape)
 
 
     def prepare_data(self, max_features, max_len, test_size, reduced_data_size = None):
         print("Preparing data...")
 
         # Get the sentances into a list
-        list_sentences_bots = self.russian_troll_tweets["content"].fillna("Invalid").values
+        list_sentences_bots = self.bot_tweets["content"].fillna("Invalid").values
         list_sentences_humans = self.human_tweets["Text"].fillna("Invalid").values
         list_sentences_train = np.concatenate((list_sentences_humans, list_sentences_bots), axis = 0)
 
@@ -183,3 +200,72 @@ class TrainBotAegis():
         print("Confusion matrix:")
         print(confusion_matrix)
 
+# Used for extracting twibot tweets
+def get_twibot_cat_tweets(file, exclude_rt = True):
+    from googletrans import Translator
+    #from google_trans_new import google_translator
+    translator = Translator()
+    #translator = google_translator()
+
+    
+    human_tweets = []
+    bot_tweets = []
+    human_tweets_lists = []
+    for i, user in enumerate(file):
+        user_id = user["profile"]["id_str"]
+        username = user["profile"]["screen_name"]
+        display_name = user["profile"]["name"]
+
+        if i > 5:
+            break
+
+        if (user["label"]) == "0":
+            try:
+                tweets = user["tweet"]
+                if exclude_rt is True:
+                    try:
+                        tweets = [tweet.split('RT @')[1].split(':')[1] for tweet in tweets]
+                    except IndexError: # Except occurs if tweet is not a retweet (retweets start 'RT @')
+                        pass
+                
+                # Unfortunately Twibot does not give the lang, so we must find it ourselves
+                import time
+                for j, tweet in enumerate(tweets):
+                    try:
+                        lang = translator.translate(tweet).src
+                        #lang = translator.detect(tweet)[0]
+                    except IndexError:
+                        lang = 'none'
+                    except AttributeError:
+                        print("Waiting for API limit...")
+                        time.sleep(101)
+                        lang = 'none'
+                    except Exception as e: # Can't forsee this being used but we don't want to halt this looong run
+                        print("Unknown error, waiting...", e)
+                        lang = 'none'
+                        time.sleep(101) # Just in case
+                        
+                    print(i, j, lang, tweet)
+                    human_tweets_lists.append([user_id, username, display_name, tweet, lang])
+                    time.sleep(0.3)
+
+            except TypeError: # Except occurs if user has no tweets
+                pass
+
+        elif (user["label"]) == "1":
+            try:
+                tweets = user["tweet"]
+                if exclude_rt is True:
+                    try:
+                        tweets = [tweet.split('RT @')[1].split(':')[1] for tweet in tweets]
+                    except IndexError: # Except occurs if tweet is not a retweet (retweets start 'RT @')
+                        pass
+
+                bot_tweets.extend(tweets)
+
+            except TypeError: # Except occurs if user has no tweets
+                pass
+
+    human_tweets_df = pd.DataFrame(human_tweets_lists, columns=['User Id', 'Username', 'Display Name', 'Text', 'Lang'])
+
+    return human_tweets_df, bot_tweets
