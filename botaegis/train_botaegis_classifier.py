@@ -20,23 +20,50 @@ from models import get_model
 
 class TrainBotAegis():
     def __init__(self):
+        np.random.seed(0)
         pass
 
-    def read_twibot_data(self, twibot_data_file_path):
+    def read_twibot_data(self, filter_on_english, twibot_data_dir, join_additional_data = False, human_tweets_dir = None, human_tweets_files = None):
         print("Reading in data...")
-        with open(twibot_data_file_path) as f:
-            file = json.load(f)
+
+        with open(twibot_data_dir + 'train.json') as f:
+            test_file = json.load(f)
+        with open(twibot_data_dir + 'test.json') as f:
+            train_file = json.load(f)
+        with open(twibot_data_dir + 'dev.json') as f:
+            val_file = json.load(f)
         
         # Get the tweets of human and bot accounts
         # We will do this for train, test and val (dev) data here. We will do our own train/test split later
-        human_tweets, bot_tweets = get_twibot_cat_tweets(file)
+        train_human_tweets, train_bot_tweets = get_twibot_cat_tweets(train_file)
+        test_human_tweets, test_bot_tweets = get_twibot_cat_tweets(test_file)
+        val_human_tweets, val_bot_tweets = get_twibot_cat_tweets(val_file)
 
-        self.human_tweets = human_tweets
-        self.bot_tweets = bot_tweets
-        print(human_tweets)
-        print(len(human_tweets), len(bot_tweets))
+        self.human_tweets = pd.concat([train_human_tweets, test_human_tweets, val_human_tweets])
+        self.bot_tweets = pd.concat([train_bot_tweets, test_bot_tweets, val_bot_tweets])
+        print(self.human_tweets)
+        print(self.bot_tweets)
+        print(len(self.human_tweets), len(self.bot_tweets))
 
-        human_tweets.to_csv('aa.csv')
+        if filter_on_english is True:
+            self.human_tweets = self.human_tweets.drop(self.human_tweets[~self.human_tweets['Language'].str.contains('en', na=False)].index)
+            self.bot_tweets = self.bot_tweets.drop(self.bot_tweets[~self.bot_tweets['Language'].str.contains('en', na=False)].index)
+
+
+        if join_additional_data is True:
+            additional_human_tweets = pd.read_csv(human_tweets_dir + human_tweets_files)
+
+            additional_human_tweets = additional_human_tweets.dropna(subset=['Text'], how='all')
+
+            if filter_on_english is True:
+                additional_human_tweets = additional_human_tweets.drop(additional_human_tweets[~additional_human_tweets['Language'].str.contains('en', na=False)].index)
+
+            self.human_tweets = pd.concat([self.human_tweets, additional_human_tweets])
+        
+        self.human_tweets.reset_index(drop=True, inplace=True)
+        
+        print(self.human_tweets['Text'])
+        self.human_tweets.to_csv('cc.csv')
 
     def read_IRA_data(self, filter_on_english, human_tweets_dir, bot_tweets_dir, human_tweets_files = None, bot_tweets_files = None):
         print("Reading in data...")
@@ -106,7 +133,10 @@ class TrainBotAegis():
         print("Preparing data...")
 
         # Get the sentances into a list
-        list_sentences_bots = self.bot_tweets["content"].fillna("Invalid").values
+        try:
+            list_sentences_bots = self.bot_tweets["content"].fillna("Invalid").values
+        except KeyError:
+            list_sentences_bots = self.bot_tweets["Text"].fillna("Invalid").values
         list_sentences_humans = self.human_tweets["Text"].fillna("Invalid").values
         list_sentences_train = np.concatenate((list_sentences_humans, list_sentences_bots), axis = 0)
 
@@ -154,8 +184,15 @@ class TrainBotAegis():
             print("Training model...")
 
             # Where the weights will be saved to:
-            if not os.path.exists(model_dir + "checkpoints/" + model_name):
-                os.makedirs(model_dir + "checkpoints/" + model_name)
+            if not os.path.exists(model_dir + "checkpoints/" + model_name + "/" + data_used_name):
+                os.makedirs(model_dir + "checkpoints/" + model_name + "/" + data_used_name)
+
+            # Save the tokenizer here. We could have saved it earlier on but now we can save it in the same
+            # path as the model. Note that pickle is more efficient than json but json is nicer and more reliable
+            tokenizer_json = self.tokenizer.to_json()
+            tokenizer_file_path = model_dir + "checkpoints/" + model_name + "/" + data_used_name + "/tokenizer.json"
+            with io.open(tokenizer_file_path, 'w', encoding='utf-8') as f:
+                f.write(json.dumps(tokenizer_json, ensure_ascii=False))
             
             if self.reduced_data_size is not None:
                 file_path = model_dir + "checkpoints/" + model_name + "/" + data_used_name + "/{epoch:02d}epochs_" + str(batch_size) + "batch_" + str(self.reduced_data_size) + "reduceddata_weights.hdf5"
@@ -164,7 +201,7 @@ class TrainBotAegis():
 
             print(file_path)
             checkpoint = ModelCheckpoint(file_path, monitor='val_loss', verbose=1, save_best_only=True, mode='min')
-            early = EarlyStopping(monitor="val_loss", mode="min", patience=20)
+            early = EarlyStopping(monitor="val_loss", mode="min", patience=5)
 
             callbacks_list = [checkpoint, early]
             self.model.fit(self.x_train, self.y_train, 
@@ -174,12 +211,6 @@ class TrainBotAegis():
                     callbacks=callbacks_list)
             #model.load_weights(file_path)
 
-        # Save the tokenizer here. We could have saved it earlier on but now we can save it in the same
-        # path as the model. Note that pickle is more efficient than json but json is nicer and more reliable
-        tokenizer_json = self.tokenizer.to_json()
-        tokenizer_file_path = model_dir + "checkpoints/" + model_name + "/" + data_used_name + "/tokenizer.json"
-        with io.open(tokenizer_file_path, 'w', encoding='utf-8') as f:
-            f.write(json.dumps(tokenizer_json, ensure_ascii=False))
 
     def test_model(self, batch_size = 1024):
         print("Testing model...")
@@ -202,52 +233,38 @@ class TrainBotAegis():
 
 # Used for extracting twibot tweets
 def get_twibot_cat_tweets(file, exclude_rt = True):
-    from googletrans import Translator
-    #from google_trans_new import google_translator
-    translator = Translator()
-    #translator = google_translator()
+    import re
 
-    
-    human_tweets = []
-    bot_tweets = []
     human_tweets_lists = []
+    bot_tweets_lists = []
     for i, user in enumerate(file):
         user_id = user["profile"]["id_str"]
         username = user["profile"]["screen_name"]
         display_name = user["profile"]["name"]
 
-        if i > 5:
+        if i > 4:
             break
 
         if (user["label"]) == "0":
             try:
                 tweets = user["tweet"]
+                tweets_lang = user["tweet_lang"]
                 if exclude_rt is True:
                     try:
+                        # Remove retweet tag
                         tweets = [tweet.split('RT @')[1].split(':')[1] for tweet in tweets]
+
+                        # Remove url links
+                        tweets = [re.sub(r'http\S+', '', tweet) for tweet in tweets]
                     except IndexError: # Except occurs if tweet is not a retweet (retweets start 'RT @')
                         pass
                 
                 # Unfortunately Twibot does not give the lang, so we must find it ourselves
                 import time
-                for j, tweet in enumerate(tweets):
-                    try:
-                        lang = translator.translate(tweet).src
-                        #lang = translator.detect(tweet)[0]
-                    except IndexError:
-                        lang = 'none'
-                    except AttributeError:
-                        print("Waiting for API limit...")
-                        time.sleep(101)
-                        lang = 'none'
-                    except Exception as e: # Can't forsee this being used but we don't want to halt this looong run
-                        print("Unknown error, waiting...", e)
-                        lang = 'none'
-                        time.sleep(101) # Just in case
+                for j, (tweet, tweet_lang) in enumerate(zip(tweets, tweets_lang)):
                         
-                    print(i, j, lang, tweet)
-                    human_tweets_lists.append([user_id, username, display_name, tweet, lang])
-                    time.sleep(0.3)
+                    print(i, j, tweet, tweets_lang)
+                    human_tweets_lists.append([user_id, username, display_name, tweet, tweet_lang])
 
             except TypeError: # Except occurs if user has no tweets
                 pass
@@ -257,15 +274,23 @@ def get_twibot_cat_tweets(file, exclude_rt = True):
                 tweets = user["tweet"]
                 if exclude_rt is True:
                     try:
+                        # Remove retweet tag
                         tweets = [tweet.split('RT @')[1].split(':')[1] for tweet in tweets]
+
+                        # Remove url links
+                        tweets = [re.sub(r'http\S+', '', tweet) for tweet in tweets]
                     except IndexError: # Except occurs if tweet is not a retweet (retweets start 'RT @')
                         pass
 
-                bot_tweets.extend(tweets)
+                for j, (tweet, tweet_lang) in enumerate(zip(tweets, tweets_lang)):
+                    print(i, j, tweet, tweet_lang)
+                    bot_tweets_lists.append([user_id, username, display_name, tweet, tweet_lang])
 
             except TypeError: # Except occurs if user has no tweets
                 pass
 
-    human_tweets_df = pd.DataFrame(human_tweets_lists, columns=['User Id', 'Username', 'Display Name', 'Text', 'Lang'])
+    human_tweets_df = pd.DataFrame(human_tweets_lists, columns=['User Id', 'Username', 'Display Name', 'Text', 'Language'])
+    bot_tweets_df = pd.DataFrame(bot_tweets_lists, columns=['User Id', 'Username', 'Display Name', 'Text', 'Language'])
 
-    return human_tweets_df, bot_tweets
+
+    return human_tweets_df, bot_tweets_df

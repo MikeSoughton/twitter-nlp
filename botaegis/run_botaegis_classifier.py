@@ -52,7 +52,7 @@ class RunBotAegis():
         self.model.summary()
         
 
-    def run_model(self, model_dir, model_name, data_used_name, trained_weights_path, data_out_dir, batch_size = 512):
+    def run_model(self, model_dir, model_name, data_used_name, trained_weights_path, data_out_dir, data_out_file_path, batch_size = 512):
 
         weights_file_path = model_dir + "checkpoints/" + model_name + "/" + data_used_name + "/" + trained_weights_path
         self.model.load_weights(weights_file_path)
@@ -69,12 +69,13 @@ class RunBotAegis():
 
         #TODO assumes data saved in data/scraped_tweets/<keywords>/
         keywords_dir = self.tweets_file_path.split("/")[2]
-        data_file_name = self.tweets_file_path.split("/")[3]
         if not os.path.exists(data_out_dir + keywords_dir):
             os.makedirs(data_out_dir + keywords_dir)
         
-        self.tweets_df.to_csv(data_out_dir + keywords_dir + "/" + data_file_name.replace('.csv', '_botaegis.csv'))
-        print("Saved tweets with classifier bot scores to", str(data_out_dir + keywords_dir + "/" + data_file_name.replace('.csv', '_botaegis.csv')))
+        saved_filename = data_out_file_path
+        #saved_filename = str(data_out_dir + keywords_dir + "/" + data_file_name.replace('.csv', '_botaegis_twibot_test.csv'))
+        self.tweets_df.to_csv(saved_filename)
+        print("Saved tweets with classifier bot scores to", saved_filename)
 
 
         # My experimenting - delete after it is saved elsewhere:

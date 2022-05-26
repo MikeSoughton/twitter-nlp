@@ -5,9 +5,10 @@
 
     "DataCfg":{
         "tweets_file_path":"data/checked_tweets/rugby/tweets_raw_en_df_individual_5000dailytweets_2022-02-10_to_2022-03-10_botometer.csv",
-        "tokenizer_file_path":"models/checkpoints/solo_cnn/IRA1_200tweetsperhuman/tokenizer.json",
-        "train_data_used_name":"IRA1_200tweetsperhuman",
-        "data_out_dir":"data/checked_tweets/"
+        "tokenizer_file_path":"models/checkpoints/solo_cnn/Twibot-20_test_200verified2019/tokenizer.json",
+        "train_data_used_name":"Twibot-20_test_200verified2019",
+        "data_out_dir":"data/checked_tweets/",
+        "data_out_file_path":"data/checked_tweets/rugby/tweets_raw_en_df_individual_5000dailytweets_2022-02-10_to_2022-03-10_botometer_twibot.csv"
     },
 
     "VectorisationParams":{

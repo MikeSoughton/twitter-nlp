@@ -6,7 +6,8 @@
     "DataCfg":{
         "train_data_mode":"twibot",
         "TwibotDataCfg": {
-            "twibot_data_file_path":"data/Twibot-20/test.json"
+            "twibot_data_dir":"data/Twibot-20/",
+            "join_additional_data":false
         },
         "IRADataCfg": {
             "human_tweets_dir":"data/human_tweets/",
@@ -14,7 +15,7 @@
             "bot_tweets_dir":"data/IRA_tweets/",
             "bot_tweets_files":["IRAhandle_tweets_1.csv"]
         },
-        "data_used_name":"IRA1_200tweetsperhuman",
+        "data_used_name":"Twibot-20_full_filt",
         "filter_on_english":true,
         "test_size":0.33,
         "reduced_data_size":null
@@ -28,9 +29,9 @@
     "ModelCfg":{
         "model_dir":"models/",
         "model_name":"solo_cnn",
-        "load_weights":true,
+        "load_weights":false,
         "pretrained_weights_path":"02epochs_512batch_fulldata_weights.hdf5",
-        "epochs":1,
+        "epochs":15,
         "batch_size":512
     }
 }

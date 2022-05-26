@@ -15,7 +15,8 @@ def train_bot_classifier():
 
     # Data configurations
     train_data_mode = config["DataCfg"]["train_data_mode"]
-    twibot_data_file_path = config["DataCfg"]["TwibotDataCfg"]["twibot_data_file_path"]
+    twibot_data_dir = config["DataCfg"]["TwibotDataCfg"]["twibot_data_dir"]
+    join_additional_data = config["DataCfg"]["TwibotDataCfg"]["join_additional_data"]
     human_tweets_dir = config["DataCfg"]["IRADataCfg"]["human_tweets_dir"]
     human_tweets_files = config["DataCfg"]["IRADataCfg"]["human_tweets_files"]
     bot_tweets_dir = config["DataCfg"]["IRADataCfg"]["bot_tweets_dir"]
@@ -44,7 +45,7 @@ def train_bot_classifier():
 
     # Data preparations
     if train_data_mode == "twibot":
-        TrainBotAegis.read_twibot_data(twibot_data_file_path)
+        TrainBotAegis.read_twibot_data(filter_on_english, twibot_data_dir, join_additional_data, human_tweets_dir, human_tweets_files)
     elif train_data_mode == "IRA":
         TrainBotAegis.read_IRA_data(filter_on_english, human_tweets_dir, bot_tweets_dir, human_tweets_files = human_tweets_files, bot_tweets_files = bot_tweets_files)
     

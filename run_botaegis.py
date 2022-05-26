@@ -18,6 +18,7 @@ def run_bot_classifier():
     tokenizer_file_path = config["DataCfg"]["tokenizer_file_path"]
     train_data_used_name = config["DataCfg"]["train_data_used_name"]
     data_out_dir = config["DataCfg"]["data_out_dir"]
+    data_out_file_path = config["DataCfg"]["data_out_file_path"]
 
     
     # Vectorisation parameters
@@ -40,7 +41,7 @@ def run_bot_classifier():
 
     RunBotAegis.build_model(model_name, max_features = max_features, max_len = max_len)
 
-    RunBotAegis.run_model(model_dir, model_name, train_data_used_name, trained_weights_path, data_out_dir, batch_size = batch_size)
+    RunBotAegis.run_model(model_dir, model_name, train_data_used_name, trained_weights_path, data_out_dir, data_out_file_path, batch_size = batch_size)
 
 
 
