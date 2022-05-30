@@ -26,9 +26,9 @@ class TrainBotAegis():
     def read_twibot_data(self, filter_on_english, twibot_data_dir, join_additional_data = False, human_tweets_dir = None, human_tweets_files = None):
         print("Reading in data...")
 
-        with open(twibot_data_dir + 'train.json') as f:
-            test_file = json.load(f)
         with open(twibot_data_dir + 'test.json') as f:
+            test_file = json.load(f)
+        with open(twibot_data_dir + 'train.json') as f:
             train_file = json.load(f)
         with open(twibot_data_dir + 'dev.json') as f:
             val_file = json.load(f)
@@ -49,6 +49,9 @@ class TrainBotAegis():
             self.human_tweets = self.human_tweets.drop(self.human_tweets[~self.human_tweets['Language'].str.contains('en', na=False)].index)
             self.bot_tweets = self.bot_tweets.drop(self.bot_tweets[~self.bot_tweets['Language'].str.contains('en', na=False)].index)
 
+        print(self.human_tweets)
+        print(self.bot_tweets)
+        print(len(self.human_tweets), len(self.bot_tweets))
 
         if join_additional_data is True:
             additional_human_tweets = pd.read_csv(human_tweets_dir + human_tweets_files)
@@ -272,6 +275,7 @@ def get_twibot_cat_tweets(file, exclude_rt = True):
         elif (user["label"]) == "1":
             try:
                 tweets = user["tweet"]
+                tweets_lang = user["tweet_lang"]
                 if exclude_rt is True:
                     try:
                         # Remove retweet tag

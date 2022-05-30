@@ -31,6 +31,7 @@ class RunBotAegis():
         print("Preparing data...")
 
         # Load the tokenizer that was saved in training
+        print(tokenizer_file_path)
         with open(tokenizer_file_path) as f:
             data = json.load(f)
             tokenizer = tokenizer_from_json(data)

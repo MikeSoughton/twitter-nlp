@@ -64,7 +64,7 @@ if __name__ == '__main__':
 
     # Just speciffying config file as default arg here
     parser = argparse.ArgumentParser(formatter_class=argparse.RawTextHelpFormatter)
-    parser.add_argument('-c', '--config', type=str, default = 'configs/train_bot_classifier_config.json', help = 'str: train bot classifier configuration file path')
+    parser.add_argument('-c', '--config', type=str, default = 'configs/train_bot_classifier_config_default.json', help = 'str: train bot classifier configuration file path')
     args = parser.parse_args()
 
     train_bot_classifier()

@@ -23,6 +23,7 @@ class GetSentiment:
 
         # Drop any NaN values if they exist
         self.tweets_df = self.tweets_df.dropna(subset=['Username'], how='all')
+        self.tweets_df = self.tweets_df.dropna(subset=['Text'], how='all')
         #self.tweets_df = self.tweets_df.dropna(subset=['Text'], how='all')
         self.tweets_df = self.tweets_df.reset_index(drop=True)
 
@@ -44,6 +45,7 @@ class GetSentiment:
         nltk.download('stopwords') #This must be run once to download the stopwords, but nltk knows if it exists already
         self.stop = stopwords.words('english')
 
+        #self.tweets_df = self.tweets_df.loc[self.tweets_df.Text.apply(type) != float] # Would drop any floats, but all floats were NaNs which were dropped above
         self.tweets_df['Text_stop']  = self.tweets_df['Text_punc'] .apply(lambda x: " ".join(x for x in x.split() if x not in self.stop))
 
         # Tokenising tweets
@@ -115,7 +117,8 @@ class LDA_Decomposition:
 
         # Drop any NaN values if they exist
         self.tweets_df = self.tweets_df.dropna(subset=['Username'], how='all')
-        #self.tweets_df = self.tweets_df.dropna(subset=['Text'], how='all')
+        self.tweets_df = self.tweets_df.dropna(subset=['Text'], how='all')
+        self.tweets_df = self.tweets_df.dropna(subset=['Text_lemmatized'], how='all')
         self.tweets_df = self.tweets_df.reset_index(drop=True)
 
     def filter_stopwords(self):
@@ -128,8 +131,8 @@ class LDA_Decomposition:
         
         # Add specific words to be filtered out. I think the rationale here is that since the subject 
         # is e.g. Ukraine, we aren't interest in learning that tweets concern Ukraine
-        new = ("ukraine", "russia")
-        stop.extend(new)
+        #new = ("ukraine", "russia")
+        #stop.extend(new)
 
         print(stop[-10:])
 
@@ -139,8 +142,13 @@ class LDA_Decomposition:
     def setup_countvectorizer(self, threshold):
         print("Initialising CountVectorizer...")
 
-        self.human_tweets_df = self.tweets_df.loc[np.where((self.tweets_df['Bot scores'] < 0.75))[0]]
-        self.bot_tweets_df = self.tweets_df.loc[np.where((self.tweets_df['Bot scores'] >= 0.75))[0]]
+        data_type = 'labelled' #TODO Put this in config
+        if data_type == 'labelled':
+            self.human_tweets_df = self.tweets_df.loc[np.where((self.tweets_df['Label'] == 0))[0]]
+            self.bot_tweets_df = self.tweets_df.loc[np.where((self.tweets_df['Label'] == 1))[0]]
+        else:
+            self.human_tweets_df = self.tweets_df.loc[np.where((self.tweets_df['Bot scores'] < threshold))[0]]
+            self.bot_tweets_df = self.tweets_df.loc[np.where((self.tweets_df['Bot scores'] >= threshold))[0]]
 
         self.cv = CountVectorizer(max_df=0.75, min_df=2)
         self.human_cv = CountVectorizer(max_df=0.75, min_df=2)
@@ -153,23 +161,23 @@ class LDA_Decomposition:
         #print(self.dtm)
 
         # We can also get all those words using the get_feature_names() function
-        feature_names = self.human_cv.get_feature_names()
+        feature_names = self.cv.get_feature_names()
         human_feature_names = self.human_cv.get_feature_names()
         bot_feature_names = self.bot_cv.get_feature_names()
         print(len(feature_names))
         print(len(human_feature_names)) # show the total number of distinct words
         print(len(bot_feature_names))
 
-    def run_LDA(self, num_LDA_topics, LDA_tweets_out_file_name_desc):
+    def run_LDA(self, num_LDA_topics, LDA_tweets_out_file_name_desc): #TODO add threshold as arg
         print("Running LDA analysis...")
         
-        self.LDA_model = LatentDirichletAllocation(n_components=num_LDA_topics, max_iter=30, random_state=42)
+        self.LDA_model = LatentDirichletAllocation(n_components=num_LDA_topics, max_iter=30, random_state=42, verbose = 2)
         self.LDA_model.fit(self.dtm)
-
-        self.human_LDA_model = LatentDirichletAllocation(n_components=num_LDA_topics, max_iter=30, random_state=42)
+        print("h")
+        self.human_LDA_model = LatentDirichletAllocation(n_components=num_LDA_topics, max_iter=30, random_state=42, verbose = 2)
         self.human_LDA_model.fit(self.human_dtm)
 
-        self.bot_LDA_model = LatentDirichletAllocation(n_components=num_LDA_topics, max_iter=30, random_state=42)
+        self.bot_LDA_model = LatentDirichletAllocation(n_components=num_LDA_topics, max_iter=30, random_state=42, verbose = 2)
         self.bot_LDA_model.fit(self.bot_dtm)
 
         # Pick a single topic 
@@ -177,11 +185,6 @@ class LDA_Decomposition:
 
         # Get the indices that would sort this array
         a_topic.argsort()
-
-        #top_20_words_indices = a_topic.argsort()[-20:]
-
-        #for i in top_20_words_indices:
-        #    print(self.cv.get_feature_names()[i])
 
         for i, topic in enumerate(self.human_LDA_model.components_):
             print("THE HUMAN TOP {} WORDS FOR TOPIC #{}".format(20, i))
@@ -205,34 +208,19 @@ class LDA_Decomposition:
         print(type(final_topics.argmax(axis=1)))
         print(final_topics.argmax(axis=1).shape)
 
-        #np.savetxt('lda_test1.txt', final_topics.argmax(axis=1))
-        #np.savetxt('lda_humantest1.txt', human_final_topics.argmax(axis=1))
-        #np.savetxt('lda_bottest1.txt', bot_final_topics.argmax(axis=1))
-        
-
-
-
-
-
-        #self.tweets_df["Overall topic number"] = final_topics.argmax(axis=1)
-        #self.tweets_df["Human topic number"] = human_final_topics.argmax(axis=1)
-        #self.tweets_df["Bot topic number"] = bot_final_topics.argmax(axis=1)
-
-        #final_topics1 = np.loadtxt('lda_test1.txt')
-        #human_final_topics1 = np.loadtxt('lda_humantest1.txt')
-        #bot_final_topics1 = np.loadtxt('lda_bottest1.txt')
-
         self.tweets_df["Overall topic number"] = -99
         self.tweets_df["Human topic number"] = -99
         self.tweets_df["Bot topic number"] = -99
 
+        # We can use labelled truth bot score data or bot scores we have found 
+        data_type = 'labelled' #TODO Put this in config
         self.tweets_df["Overall topic number"] = final_topics.argmax(axis=1)
-        self.tweets_df["Human topic number"].loc[np.where((self.tweets_df['Bot scores'] < 0.75))[0]] = human_final_topics.argmax(axis=1)
-        self.tweets_df["Bot topic number"].loc[np.where((self.tweets_df['Bot scores'] >= 0.75))[0]] = bot_final_topics.argmax(axis=1)
-        
-
-        #print(self.tweets_df)
-        #self.tweets_df.to_csv('c.csv')
+        if data_type == 'labelled':
+            self.tweets_df["Human topic number"].loc[np.where((self.tweets_df['Label'] == 0))[0]] = human_final_topics.argmax(axis=1)
+            self.tweets_df["Bot topic number"].loc[np.where((self.tweets_df['Label'] == 1))[0]] = bot_final_topics.argmax(axis=1)
+        else:
+            self.tweets_df["Human topic number"].loc[np.where((self.tweets_df['Bot scores'] < 0.75))[0]] = human_final_topics.argmax(axis=1)
+            self.tweets_df["Bot topic number"].loc[np.where((self.tweets_df['Bot scores'] >= 0.75))[0]] = bot_final_topics.argmax(axis=1)
 
         # Setup directories for saving outputs:
         #TODO assumes data saved in data/analysed_tweets/<keywords>/

@@ -63,4 +63,6 @@ if __name__ == '__main__':
     parser.add_argument('-c', '--config', type=str, default = 'configs/run_sentiment_config.json', help = 'str: train bot classifier configuration file path')
     args = parser.parse_args()
 
+    print("Running with config", args.config)
+
     run_get_sentiment()

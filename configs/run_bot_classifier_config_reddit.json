@@ -1,0 +1,24 @@
+{
+    "versionCfg": {
+		"managerVersionId": "botfinder v1"
+	},
+
+    "DataCfg":{
+        "tweets_file_path":"data/checked_tweets/verified_reddit_latin_10peruser/verified_reddit_latin_134144-144144_10peruser_botometer.csv",
+        "tokenizer_file_path":"models/checkpoints/solo_cnn/IRA1_200tweetsperhuman/tokenizer.json",
+        "train_data_used_name":"IRA1_200tweetsperhuman",
+        "data_out_dir":"data/checked_tweets/"
+    },
+
+    "VectorisationParams":{
+        "max_features":20000,
+        "max_len":100
+    },
+
+    "ModelCfg":{
+        "model_dir":"models/",
+        "model_name":"solo_cnn",
+        "trained_weights_path":"02epochs_512batch_fulldata_weights.hdf5",
+        "batch_size":512
+    }
+}

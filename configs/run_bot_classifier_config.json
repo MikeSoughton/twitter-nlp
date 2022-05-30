@@ -4,10 +4,11 @@
 	},
 
     "DataCfg":{
-        "tweets_file_path":"data/checked_tweets/verified_reddit_latin_10peruser/verified_reddit_latin_134144-144144_10peruser_botometer.csv",
+        "tweets_file_path":"data/assorted_training_data/IRA-verified2019_labelled_full.csv",
         "tokenizer_file_path":"models/checkpoints/solo_cnn/IRA1_200tweetsperhuman/tokenizer.json",
         "train_data_used_name":"IRA1_200tweetsperhuman",
-        "data_out_dir":"data/checked_tweets/"
+        "data_out_dir":"data/checked_tweets/",
+        "data_out_file_path":"data/checked_tweets/ukraine_russia/tweets_raw_en_df_individual_5000dailytweets_2022-02-10_to_2022-03-10_botometer_botaegis_twibot_full_200verified2019.csv"
     },
 
     "VectorisationParams":{
@@ -18,7 +19,7 @@
     "ModelCfg":{
         "model_dir":"models/",
         "model_name":"solo_cnn",
-        "trained_weights_path":"02epochs_512batch_fulldata_weights.hdf5",
+        "trained_weights_path":"03epochs_512batch_fulldata_weights.hdf5",
         "batch_size":512
     }
 }
