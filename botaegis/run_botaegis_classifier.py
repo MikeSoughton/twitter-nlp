@@ -22,6 +22,11 @@ class RunBotAegis():
         pass
 
     def read_data(self, tweets_file_path):
+        """Reads in data only, currently only supports csv format.
+
+        Args:
+            tweets_file_path (str): full relative file path to data file, including the file itself.
+        """
         print("Reading in data...")
 
         self.tweets_file_path = tweets_file_path

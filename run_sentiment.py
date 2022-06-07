@@ -25,6 +25,8 @@ def run_get_sentiment():
     get_sentiment = config["SentimentCfg"]["get_sentiment"]
     run_LDA = config["SentimentCfg"]["run_LDA"]
     bot_threshold = config["SentimentCfg"]["bot_threshold"]
+    labelled_data = config["SentimentCfg"]["labelled_data"]
+    bot_classifier = config["SentimentCfg"]["bot_classifier"]
     num_LDA_topics = config["SentimentCfg"]["num_LDA_topics"]
 
     # Get sentiment scores
@@ -46,9 +48,9 @@ def run_get_sentiment():
 
         LDA_Decomposition.filter_stopwords()
 
-        LDA_Decomposition.setup_countvectorizer(bot_threshold)
+        LDA_Decomposition.setup_countvectorizer(bot_threshold, labelled_data, bot_classifier = bot_classifier)
 
-        LDA_Decomposition.run_LDA(num_LDA_topics, LDA_tweets_out_file_name_desc)
+        LDA_Decomposition.run_LDA(num_LDA_topics, bot_threshold, labelled_data,  LDA_tweets_out_file_name_desc, bot_classifier = bot_classifier)
 
         LDA_Decomposition.visualise()
 

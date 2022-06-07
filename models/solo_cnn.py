@@ -1,5 +1,5 @@
 """
-
+1D CNN model. 
 """
 
 from keras.models import Model

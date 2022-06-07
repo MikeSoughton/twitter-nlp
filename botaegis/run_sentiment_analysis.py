@@ -139,16 +139,23 @@ class LDA_Decomposition:
         self.tweets_df['Tokens']  = self.tweets_df['Text_lemmatized'] .apply(lambda x: " ".join(x for x in x.split() if x not in stop))
         self.tweets_df.head()
 
-    def setup_countvectorizer(self, threshold):
+    def setup_countvectorizer(self, threshold, labelled_data, bot_classifier = 'botaegis'):
         print("Initialising CountVectorizer...")
 
-        data_type = 'labelled' #TODO Put this in config
-        if data_type == 'labelled':
+        if labelled_data is True:
             self.human_tweets_df = self.tweets_df.loc[np.where((self.tweets_df['Label'] == 0))[0]]
             self.bot_tweets_df = self.tweets_df.loc[np.where((self.tweets_df['Label'] == 1))[0]]
         else:
-            self.human_tweets_df = self.tweets_df.loc[np.where((self.tweets_df['Bot scores'] < threshold))[0]]
-            self.bot_tweets_df = self.tweets_df.loc[np.where((self.tweets_df['Bot scores'] >= threshold))[0]]
+            if bot_classifier == 'botaegis':
+                self.human_tweets_df = self.tweets_df.loc[np.where((self.tweets_df['Bot scores'] < threshold))[0]]
+                self.bot_tweets_df = self.tweets_df.loc[np.where((self.tweets_df['Bot scores'] >= threshold))[0]]
+            elif bot_classifier == 'botometer_astroturf':
+                self.human_tweets_df = self.tweets_df.loc[np.where((self.tweets_df['Astroturf'] < threshold))[0]]
+                self.bot_tweets_df = self.tweets_df.loc[np.where((self.tweets_df['Astroturf'] >= threshold))[0]]
+            elif bot_classifier == 'botometer_overall':
+                self.human_tweets_df = self.tweets_df.loc[np.where((self.tweets_df['Overall'] < threshold))[0]]
+                self.bot_tweets_df = self.tweets_df.loc[np.where((self.tweets_df['Overall'] >= threshold))[0]]
+
 
         self.cv = CountVectorizer(max_df=0.75, min_df=2)
         self.human_cv = CountVectorizer(max_df=0.75, min_df=2)
@@ -168,12 +175,15 @@ class LDA_Decomposition:
         print(len(human_feature_names)) # show the total number of distinct words
         print(len(bot_feature_names))
 
-    def run_LDA(self, num_LDA_topics, LDA_tweets_out_file_name_desc): #TODO add threshold as arg
+        print(feature_names)
+
+    def run_LDA(self, num_LDA_topics, threshold, labelled_data, LDA_tweets_out_file_name_desc, bot_classifier = 'botaegis'): #TODO add threshold as arg
+        import json
         print("Running LDA analysis...")
         
         self.LDA_model = LatentDirichletAllocation(n_components=num_LDA_topics, max_iter=30, random_state=42, verbose = 2)
         self.LDA_model.fit(self.dtm)
-        print("h")
+
         self.human_LDA_model = LatentDirichletAllocation(n_components=num_LDA_topics, max_iter=30, random_state=42, verbose = 2)
         self.human_LDA_model.fit(self.human_dtm)
 
@@ -186,23 +196,51 @@ class LDA_Decomposition:
         # Get the indices that would sort this array
         a_topic.argsort()
 
+        topic_words_list = []
+        for i, topic in enumerate(self.LDA_model.components_):
+            print("THE HUMAN TOP {} WORDS FOR TOPIC #{}".format(20, i))
+            topic_words = [self.cv.get_feature_names()[index] for index in topic.argsort()[-50:]]
+            topic_words_list.append(topic_words)
+
+            print(topic_words)
+            print("\n")
+        
+        human_topic_words_list = []
         for i, topic in enumerate(self.human_LDA_model.components_):
             print("THE HUMAN TOP {} WORDS FOR TOPIC #{}".format(20, i))
-            print([self.human_cv.get_feature_names()[index] for index in topic.argsort()[-20:]])
+            human_topic_words = [self.human_cv.get_feature_names()[index] for index in topic.argsort()[-50:]]
+            human_topic_words_list.append(human_topic_words)
+            print(human_topic_words)
             print("\n")
 
+        bot_topic_words_list = []
         num_bot_topics = len(self.bot_LDA_model.components_)
         print("LLL", num_bot_topics)
         print(self.bot_LDA_model.components_)
         for i, topic in enumerate(self.bot_LDA_model.components_):
             print("THE BOT TOP {} WORDS FOR TOPIC #{}".format(20, i))
-            print([self.bot_cv.get_feature_names()[index] for index in topic.argsort()[-20:]])
+            bot_topic_words = [self.bot_cv.get_feature_names()[index] for index in topic.argsort()[-50:]]
+            bot_topic_words_list.append(bot_topic_words)
+            print(bot_topic_words)
             print("\n")
+        
+        with open("total_topic_words.json", 'w') as f:
+            json.dump(topic_words_list, f, indent=2)
+
+        with open("human_topic_words.json", 'w') as f:
+            json.dump(human_topic_words_list, f, indent=2)
+
+        with open("bot_topic_words.json", 'w') as f:
+            json.dump(bot_topic_words_list, f, indent=2)
 
         final_topics = self.LDA_model.transform(self.dtm)
         human_final_topics = self.human_LDA_model.transform(self.human_dtm)
         bot_final_topics = self.bot_LDA_model.transform(self.bot_dtm)
         print(human_final_topics.shape)
+
+        print(final_topics)
+        print(human_final_topics)
+        print(bot_final_topics)
 
         print(self.tweets_df)
         print(type(final_topics.argmax(axis=1)))
@@ -213,14 +251,21 @@ class LDA_Decomposition:
         self.tweets_df["Bot topic number"] = -99
 
         # We can use labelled truth bot score data or bot scores we have found 
-        data_type = 'labelled' #TODO Put this in config
         self.tweets_df["Overall topic number"] = final_topics.argmax(axis=1)
-        if data_type == 'labelled':
+        if labelled_data is True:
             self.tweets_df["Human topic number"].loc[np.where((self.tweets_df['Label'] == 0))[0]] = human_final_topics.argmax(axis=1)
             self.tweets_df["Bot topic number"].loc[np.where((self.tweets_df['Label'] == 1))[0]] = bot_final_topics.argmax(axis=1)
         else:
-            self.tweets_df["Human topic number"].loc[np.where((self.tweets_df['Bot scores'] < 0.75))[0]] = human_final_topics.argmax(axis=1)
-            self.tweets_df["Bot topic number"].loc[np.where((self.tweets_df['Bot scores'] >= 0.75))[0]] = bot_final_topics.argmax(axis=1)
+            if bot_classifier == 'botaegis':
+                self.tweets_df["Human topic number"].loc[np.where((self.tweets_df['Bot scores'] < threshold))[0]] = human_final_topics.argmax(axis=1)
+                self.tweets_df["Bot topic number"].loc[np.where((self.tweets_df['Bot scores'] >= threshold))[0]] = bot_final_topics.argmax(axis=1)
+            elif bot_classifier == 'botometer_astroturf':
+                self.tweets_df["Human topic number"].loc[np.where((self.tweets_df['Astroturf'] < threshold))[0]] = human_final_topics.argmax(axis=1)
+                self.tweets_df["Bot topic number"].loc[np.where((self.tweets_df['Astroturf'] >= threshold))[0]] = bot_final_topics.argmax(axis=1)
+            elif bot_classifier == 'botometer_overall':
+                self.tweets_df["Human topic number"].loc[np.where((self.tweets_df['Overall'] < threshold))[0]] = human_final_topics.argmax(axis=1)
+                self.tweets_df["Bot topic number"].loc[np.where((self.tweets_df['Overall'] >= threshold))[0]] = bot_final_topics.argmax(axis=1)
+
 
         # Setup directories for saving outputs:
         #TODO assumes data saved in data/analysed_tweets/<keywords>/

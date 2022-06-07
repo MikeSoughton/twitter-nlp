@@ -49,6 +49,8 @@ Thumbs.db
 # Specific folders
 data/
 misc/
+Figures/
+#Visualisations/
 notebooks/exploratory_data/
 notebooks/data/
 models/checkpoints/
