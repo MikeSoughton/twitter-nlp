@@ -198,7 +198,7 @@ class LDA_Decomposition:
 
         topic_words_list = []
         for i, topic in enumerate(self.LDA_model.components_):
-            print("THE HUMAN TOP {} WORDS FOR TOPIC #{}".format(20, i))
+            print("THE TOTAl (COMBINED) TOP {} WORDS FOR TOPIC #{}".format(20, i))
             topic_words = [self.cv.get_feature_names()[index] for index in topic.argsort()[-50:]]
             topic_words_list.append(topic_words)
 

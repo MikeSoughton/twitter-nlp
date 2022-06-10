@@ -48,13 +48,19 @@ Thumbs.db
 
 # Specific folders
 data/
-misc/
-Figures/
-#Visualisations/
+#misc/
+#Figures/
+Figures_old/
+Visualisations/
 notebooks/exploratory_data/
 notebooks/data/
 models/checkpoints/
 
 # Specific files
+configs/twitter_keys_config.json
+configs/rapidapi_keys_config.json
 twitter_keys_config.json
 rapidapi_keys_config.json
+
+misc/TU_verified.ndjson
+misc/train_lang.json

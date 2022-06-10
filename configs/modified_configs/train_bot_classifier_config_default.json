@@ -1,0 +1,37 @@
+{
+    "versionCfg": {
+		"managerVersionId": "BotAegis v1"
+	},
+
+    "DataCfg":{
+        "train_data_mode":"IRA",
+        "TwibotDataCfg": {
+            "twibot_data_dir":"data/Twibot-20/",
+            "join_additional_data":false
+        },
+        "IRADataCfg": {
+            "human_tweets_dir":"data/human_tweets/",
+            "human_tweets_files":"verified_2019_200peruser.csv",
+            "bot_tweets_dir":"data/IRA_tweets/",
+            "bot_tweets_files":["IRAhandle_tweets_1.csv"]
+        },
+        "data_used_name":"IRA1_200tweetsperhuman",
+        "filter_on_english":true,
+        "test_size":0.33,
+        "reduced_data_size":null
+    },
+
+    "VectorisationParams":{
+        "max_features":20000,
+        "max_len":100
+    },
+
+    "ModelCfg":{
+        "model_dir":"models/",
+        "model_name":"solo_cnn",
+        "load_weights":false,
+        "pretrained_weights_path":"02epochs_512batch_fulldata_weights.hdf5",
+        "epochs":15,
+        "batch_size":512
+    }
+}

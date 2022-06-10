@@ -1,0 +1,25 @@
+{
+    "versionCfg": {
+		"managerVersionId": "botfinder v1"
+	},
+
+    "DataCfg":{
+        "tweets_file_path":"data/assorted_training_data/IRA-verified2019_labelled_full.csv",
+        "tokenizer_file_path":"models/checkpoints/solo_cnn/Twibot-20_full/tokenizer.json",
+        "train_data_used_name":"Twibot-20_full",
+        "data_out_dir":"data/checked_tweets/",
+        "data_out_file_path":"data/checked_tweets/IRA-verified2019_labelled_full/Twibot-20_labelled_full_botaegis_Twibottrained.csv"
+    },
+
+    "VectorisationParams":{
+        "max_features":20000,
+        "max_len":100
+    },
+
+    "ModelCfg":{
+        "model_dir":"models/",
+        "model_name":"solo_cnn",
+        "trained_weights_path":"02epochs_512batch_fulldata_weights.hdf5",
+        "batch_size":512
+    }
+}

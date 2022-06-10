@@ -1,6 +1,6 @@
 {
     "versionCfg": {
-		"managerVersionId": "botfinder v1"
+		"managerVersionId": "BotAegis v1"
 	},
 
     "Mode":1,
@@ -25,10 +25,10 @@
     },
 
     "Mode2Cfg":{
-        "user_ids_dir":"data/verified-reddit/",
-        "user_ids_file":"verified_reddit_latin.csv",
+        "user_ids_dir":"data/verified-2019/",
+        "user_ids_file":"verified-2019.tsv",
         "data_out_dir":"data/human_tweets/",
-        "data_out_file_desc":"verified_reddit_latin_134144-144144",
+        "data_out_file_desc":"verified_2019test",
         "max_tweets_per_user":10,
         "language":"en"
     }

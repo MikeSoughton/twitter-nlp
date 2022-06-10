@@ -1,17 +1,97 @@
 Here is described the meanings and uses of the config files.
 
-tran_bot_classifier_config.json:
+scrape_tweets_config.json:
+
+versionCfg: 
+    managerVersionId: the version of BotAegis
+
+Mode: (int) the scraping mode to be used. 1 for scraping tweets by keyword(s), 2 for scraping tweets by user id
+
+Mode1Cfg: if Mode == 1
+    DataCfg:
+        data_out_dir: directory where tweets are to be saved
+        organisations_file_path: path to organisations file, used to remove users who are organisations
+        human_names_file_path: path to file containing human names, used to exclude users whose names are not 
+    in this list (stricter method to exclude organisations)
+        prescraped_tweets_df_file_path: directory to prescraped tweets. If scrape is false, will proceed to 
+    out organisations
+
+    ScrapingCfg:
+        scrape: if true download treeps, if false load prescraped tweets to filter organisation
+        keywords: list of keywords to scrape
+        num_tweets_per_day: number of tweets scraped per day
+        start_date: start date to scrape from
+        end_date: end data to scrape until
+        language: scrape tweets in this language. Default is 'en'
+        user_created_after: (str) if not null, a date which only tweets after will be scraped
+
+Mode2Cfg: if Mode == 2
+    user_ids_dir: path to directory containing user ids
+    user_ids_file: filename of user ids
+    data_out_dir: directory where tweets are to be saved
+    data_out_file_desc: description for the data output file
+    max_tweets_per_user: maximum tweets scraped per user
+    language: scrape tweets in this language. Default is 'en'
+    
+
+train_bot_classifier_config.json:
 
 versionCfg:
-    managerVersionId: the version of our code, because we want to make it professional ;)
+    managerVersionId: the version of BotAegis
 
 DataCfg:
-    human_tweets_dir: the directory of human tweets
-    human_tweets_file: currently, the specific human tweets file #TODO can change to be a list of human files
-    bot_tweets_dir: the directory of bot tweets
-    bot_tweets_file: either null; if using all bot tweets, or if using a specific selection of datasets; a list of bot 
-tweets to use. If null read_data will read all datasets, if a list read_data will read those specific ones.
+    train_data_mode: train either with Twibot data or IRA data. Options are 'IRA' or 'Twibot'
+    TwibotDataCfg: if train_data_mode is 'Twibot':
+        twibot_data_dir: path to directory containing Twibot tweets
+        join_additional_data: if true join with verified2019 dataset. This can be expanded upon in the future
+    
+    IRADataCfg: if train_data_mode is 'IRA':
+        human_tweets_dir: path to directory of human tweets
+        human_tweets_file: currently, the specific human tweets file #TODO can change to be a list of human files
+        bot_tweets_dir: the directory of bot tweets
+        bot_tweets_file: either null; if using all bot tweets, or if using a specific selection of datasets; a list of bot 
+    tweets to use. If null read_data will read all datasets, if a list read_data will read those specific ones.
+    
+    data_used_name: a description of the data used for training which will be refered to when calling the trained model
+    
     filter_on_english: if true; use only English tweets, if false; use all tweets
-    reduced_data_size: if null; use the whole dataset or if some integer value; use that many samples in training. 
-This is to reduce the long network training time for testing purposes.
 
+    test_size: the fraction of data to be used for testing
+    
+    reduced_data_size: if null; use the whole dataset or if some integer value; use that many samples in training. 
+    This is to reduce the long network training time for testing purposes.
+
+VectorisationParams:
+    max_features: the number of total unique words to use as a vectorised vocabulary,
+    max_len: the maximum length of a tweet to be considered. Tweets of length less than this are padded ot this length.
+
+ModelCfg:
+    model_dir: path to directory of models
+    model_name: the model to be used, currently only solo_cnn exists
+    load_weights: if true pretrained weights are loaded - only used in testing
+    pretrained_weights_path: if load_weights is true, load weights from this path
+    epochs: number of training epochs
+    batch_size: batch size in training
+
+
+run_bot_classifier_config.json:
+
+versionCfg: 
+		managerVersionId: the version of BotAegis
+
+DataCfg:
+    tweets_file_path: the path to the tweets over which BotAegis will be run
+    tokenizer_file_path: the path to the tokenizer which was saved during training, required to run over new tweets
+    train_data_used_name: the description of the data used for training which we now use for reference
+    data_out_dir: the data output directory
+    data_out_file_path: specific data output file name. Note the above data_out_dir may now be redundant
+
+VectorisationParams:
+    max_features: the number of total unique words to use as a vectorised vocabulary,
+    max_len: the maximum length of a tweet to be considered. Tweets of length less than this are padded ot this length.
+
+ModelCfg:
+    model_dir: path to directory of models
+    model_name: the model to be used, currently only solo_cnn exists
+    trained_weights_path: the path to the trained model weights
+    batch_size: batch size over which to run the data, is not very important but can slightly affect results

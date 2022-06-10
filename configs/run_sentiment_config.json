@@ -1,24 +1,24 @@
 {
     "versionCfg": {
-		"managerVersionId": "botfinder v1"
+		"managerVersionId": "BotAegis v1"
 	},
 
     "DataCfg":{
-        "tweets_dir":"data/assorted_training_data/",
-        "tweets_in_file_name_desc":"IRA-verified2019_labelled_full",
+        "tweets_dir":"data/checked_tweets/ukraine_russia/",
+        "tweets_in_file_name_desc":"tweets_raw_en_df_individual_5000dailytweets_2022-02-10_to_2022-03-10_botometer_botaegis",
         "data_out_dir":"data/analysed_tweets/",
-        "sentiment_tweets_out_file_name_desc":"IRA-verified2019_labelled_full_sentiment",
-        "LDA_tweets_in_file_path":"data/analysed_tweets/IRA-verified2019_labelled_full/IRA-verified2019_labelled_full_sentiment.csv",
-        "LDA_tweets_out_file_name_desc":"IRA-verified2019_labelled_full_sentimentLDA.csv."
+        "sentiment_tweets_out_file_name_desc":"tweets_raw_en_df_individual_5000dailytweets_2022-02-10_to_2022-03-10_botometer_botaegis_sentiment",
+        "LDA_tweets_in_file_path":"data/analysed_tweets/ukraine_russia/tweets_raw_en_df_individual_5000dailytweets_2022-02-10_to_2022-03-10_botometer_botaegis_sentiment.csv",
+        "LDA_tweets_out_file_name_desc":"tweets_raw_en_df_individual_5000dailytweets_2022-02-10_to_2022-03-10_botometer_botaegis_sentiment_0.75botometerLDA.csv"
 
     },
 
     "SentimentCfg":{
-        "get_sentiment":false,
+        "get_sentiment":true,
         "run_LDA":true,
         "bot_threshold":0.75,
-        "labelled_data":true,
-        "bot_classifier":"botaegis",
+        "labelled_data":false,
+        "bot_classifier":"botometer_astroturf",
         "num_LDA_topics":20
     }
 }
