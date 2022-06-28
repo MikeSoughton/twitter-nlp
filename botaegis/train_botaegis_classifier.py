@@ -19,11 +19,26 @@ from sklearn.model_selection import train_test_split
 from models import get_model
 
 class TrainBotAegis():
+    """
+        Class which will train the BotAegis classifier over human and bot
+        tweets and save the trained model weights.
+    """
+    
     def __init__(self):
         np.random.seed(0)
         pass
 
     def read_twibot_data(self, filter_on_english, twibot_data_dir, join_additional_data = False, human_tweets_dir = None, human_tweets_files = None):
+        """
+        Reads in Twibot data. Has the option to concatenate it with additional human tweets e.g. verified2019.
+
+        Args:
+            filter_on_english (bool): if true; use only English tweets if false; use all tweets
+            twibot_data_dir (str): path to directory containing Twibot tweets
+            join_additional_data (bool, optional): if true join with another human dataset. This can be expanded upon in the future
+            human_tweets_dir (str, optional): the specific human tweets file. Only used if join_additional_data is true. The specific human tweets file
+            human_tweets_files (str, optional): path to directory of human tweets. Only used if join_additional_data is true
+        """
         print("Reading in data...")
 
         with open(twibot_data_dir + 'test.json') as f:
@@ -64,23 +79,27 @@ class TrainBotAegis():
             self.human_tweets = pd.concat([self.human_tweets, additional_human_tweets])
         
         self.human_tweets.reset_index(drop=True, inplace=True)
-        
-        print(self.human_tweets['Text'])
-        self.human_tweets.to_csv('cc.csv')
 
     def read_IRA_data(self, filter_on_english, human_tweets_dir, bot_tweets_dir, human_tweets_files = None, bot_tweets_files = None):
-        print("Reading in data...")
-
         """
         Here we initially read in either:
-            1) All files in the bot dataset folder
-            2) Multiple specific files in the bot dataset folder
-            3) A single specific file in the bot dataset folder
+                1) All files in the bot dataset folder
+                2) Multiple specific files in the bot dataset folder
+                3) A single specific file in the bot dataset folder
 
         Next we read in the human dataset file. Currently this is a single
         file but in the future it may consist of multiple files and could
         be read in in a similar fashion.
-        """
+
+        Args:
+            filter_on_english (bool): if true; use only English tweets if false; use all tweets
+            human_tweets_dir (str): path to directory of human tweets
+            human_tweets_file (str): currently the specific human tweets file #TODO can change to be a list of human files
+            bot_tweets_dir (str): the directory of bot tweets
+            bot_tweets_file (str): either null; if using all bot tweets or if using a specific selection of datasets; a list of bot 
+    tweets to use. If null read_data will read all datasets if a list read_data will read those specific ones.
+    """
+        print("Reading in data...")
 
         bot_tweets = None
         if bot_tweets_files is None:
@@ -88,7 +107,6 @@ class TrainBotAegis():
             print(IRA_files)
             
             li = []
-
             for filename in sorted(IRA_files):
                 print(filename)
                 df = pd.read_csv(filename, index_col=None, header=0)
@@ -133,6 +151,18 @@ class TrainBotAegis():
 
 
     def prepare_data(self, max_features, max_len, test_size, reduced_data_size = None):
+        """
+        Joins human and bot datasets, converts the text to tokenized tweets, pads sentences and 
+        does train-test splitting.
+
+        Args:
+            max_features (int): the number of total unique words to use as a vectorised vocabulary
+            max_len (int): the maximum length of a tweet to be considered. 
+        Tweets of length less than this are padded ot this length.
+            test_size (float): the fraction of data to be used for testing
+            reduced_data_size (int, optional): if null; use the whole dataset or if some integer value; 
+        use that many samples in training. This is to reduce the long network training time for testing purposes.
+        """
         print("Preparing data...")
 
         # Get the sentances into a list
@@ -170,6 +200,21 @@ class TrainBotAegis():
 
 
     def build_model(self, model_name, max_features, max_len):
+        """
+        Builds the CNN model found in models under the specified model name.
+        get_model() is a helper function found in the init in models to build
+        the specified model. Currently there is only one model 'solo_cnn'
+        but more can be added and get_model() will dynamically set them up,
+        once more if conditions are added to it.
+
+        Model parameters for solo_cnn are specified here
+
+        Args:
+            model_name (str): the model to be used. Currently only solo_cnn exists
+            max_features (int): the number of total unique words to use as a vectorised vocabulary
+            max_len (int): the maximum length of a tweet to be considered. 
+        Tweets of length less than this are padded ot this length.
+        """
         print("Building model...")
 
         self.model = get_model(model_name, conv_layers = 2, max_dilation_rate = 4, max_features = max_features, max_len = max_len)
@@ -177,7 +222,19 @@ class TrainBotAegis():
         
 
     def train_model(self, model_dir, model_name, data_used_name, epochs, batch_size, load_weights, pretrained_weights_path = None):
+        """
+        Train the model over the training data and save model weights (and also the tokenizer).
 
+        Args:
+            model_dir (str): path to directory of models
+            model_name (str): the model to be used
+            data_used_name (str): a description of the data used for training which will 
+        be refered to when running the trained model
+            epochs (int): number of training epochs
+            batch_size (int): batch size in training
+            load_weights (bool): if true pretrained weights are loaded - only used in testing
+            pretrained_weights_path (str, optional): if load_weights is true load weights from this path
+        """
         if load_weights is True:
             file_path = model_dir + "checkpoints/" + model_name + "/" + data_used_name + "/" + pretrained_weights_path
             self.model.load_weights(file_path)
@@ -216,6 +273,14 @@ class TrainBotAegis():
 
 
     def test_model(self, batch_size = 1024):
+        """
+        Test the trained model, providing model accuracy and the confusion matrix.
+
+        Args:
+            batch_size (int, optional): batch size used when running over the data. Does
+        not have to be the same as the batch size used in training but it is a good idea
+        to do so, although changing it has minimal effect.
+        """
         print("Testing model...")
         from sklearn.metrics import accuracy_score
         from sklearn.metrics import confusion_matrix
@@ -234,8 +299,19 @@ class TrainBotAegis():
         print("Confusion matrix:")
         print(confusion_matrix)
 
-# Used for extracting twibot tweets
+
 def get_twibot_cat_tweets(file, exclude_rt = True):
+    """
+    Function used in read_twibot_data() for extracting twibot tweets from the Twibot
+    json file (which contains a lot of extra unnecessary info).
+
+    Args:
+        file (_type_): the opened json file
+        exclude_rt (bool, optional): if True; exclude retweets
+
+    Returns:
+        Two Pandas DataFrames: DataFrames of human and bot tweets from Twibot
+    """
     import re
 
     human_tweets_lists = []

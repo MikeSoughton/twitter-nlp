@@ -1,6 +1,11 @@
 #!/usr/bin/env python
 """
 Code to call the TrainBotAegis class and train the human/bot classifier model. 
+Configs are in configs/train_bot_classifier_config.json, descriptions for which
+are in configs/config_description.txt. 
+
+This file uses the TrainBotAegis class in botaegis/train_botaegis_classifier.py
+where descriptions of the methods used can be found.
 """
 
 import argparse
@@ -62,9 +67,9 @@ def train_bot_classifier():
 
 if __name__ == '__main__':
 
-    # Just speciffying config file as default arg here
+    # Just specifying config file as default arg here
     parser = argparse.ArgumentParser(formatter_class=argparse.RawTextHelpFormatter)
-    parser.add_argument('-c', '--config', type=str, default = 'configs/train_bot_classifier_config_default.json', help = 'str: train bot classifier configuration file path')
+    parser.add_argument('-c', '--config', type=str, default = 'configs/train_bot_classifier_config.json', help = 'str: train bot classifier configuration file path')
     args = parser.parse_args()
 
     train_bot_classifier()

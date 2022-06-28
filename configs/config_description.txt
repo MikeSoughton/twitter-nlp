@@ -1,29 +1,29 @@
 Here is described the meanings and uses of the config files.
 
-scrape_tweets_config.json:
+scrape_tweets_config.json: config for scraping tweets
 
 versionCfg: 
     managerVersionId: the version of BotAegis
 
-Mode: (int) the scraping mode to be used. 1 for scraping tweets by keyword(s), 2 for scraping tweets by user id
+Mode: (int) the scraping mode to be used. 1 for scraping tweets by keyword(s) 2 for scraping tweets by user id
 
 Mode1Cfg: if Mode == 1
     DataCfg:
         data_out_dir: directory where tweets are to be saved
-        organisations_file_path: path to organisations file, used to remove users who are organisations
-        human_names_file_path: path to file containing human names, used to exclude users whose names are not 
+        organisations_file_path: path to organisations file used to remove users who are organisations
+        human_names_file_path: path to file containing human names used to exclude users whose names are not 
     in this list (stricter method to exclude organisations)
-        prescraped_tweets_df_file_path: directory to prescraped tweets. If scrape is false, will proceed to 
+        prescraped_tweets_df_file_path: directory to prescraped tweets. If scrape is false will proceed to 
     out organisations
 
     ScrapingCfg:
-        scrape: if true download treeps, if false load prescraped tweets to filter organisation
+        scrape: if true download treeps if false load prescraped tweets to filter organisation
         keywords: list of keywords to scrape
         num_tweets_per_day: number of tweets scraped per day
         start_date: start date to scrape from
         end_date: end data to scrape until
         language: scrape tweets in this language. Default is 'en'
-        user_created_after: (str) if not null, a date which only tweets after will be scraped
+        user_created_after: (str) if not null a date which only tweets after will be scraped
 
 Mode2Cfg: if Mode == 2
     user_ids_dir: path to directory containing user ids
@@ -34,7 +34,7 @@ Mode2Cfg: if Mode == 2
     language: scrape tweets in this language. Default is 'en'
     
 
-train_bot_classifier_config.json:
+train_botaegis_config.json: configs for training botaegis
 
 versionCfg:
     managerVersionId: the version of BotAegis
@@ -47,14 +47,14 @@ DataCfg:
     
     IRADataCfg: if train_data_mode is 'IRA':
         human_tweets_dir: path to directory of human tweets
-        human_tweets_file: currently, the specific human tweets file #TODO can change to be a list of human files
+        human_tweets_file: currently the specific human tweets file #TODO can change to be a list of human files
         bot_tweets_dir: the directory of bot tweets
-        bot_tweets_file: either null; if using all bot tweets, or if using a specific selection of datasets; a list of bot 
-    tweets to use. If null read_data will read all datasets, if a list read_data will read those specific ones.
+        bot_tweets_file: either null; if using all bot tweets or if using a specific selection of datasets; a list of bot 
+    tweets to use. If null read_data will read all datasets if a list read_data will read those specific ones.
     
     data_used_name: a description of the data used for training which will be refered to when calling the trained model
     
-    filter_on_english: if true; use only English tweets, if false; use all tweets
+    filter_on_english: if true; use only English tweets if false; use all tweets
 
     test_size: the fraction of data to be used for testing
     
@@ -62,36 +62,124 @@ DataCfg:
     This is to reduce the long network training time for testing purposes.
 
 VectorisationParams:
-    max_features: the number of total unique words to use as a vectorised vocabulary,
+    max_features: the number of total unique words to use as a vectorised vocabulary
     max_len: the maximum length of a tweet to be considered. Tweets of length less than this are padded ot this length.
 
 ModelCfg:
     model_dir: path to directory of models
-    model_name: the model to be used, currently only solo_cnn exists
+    model_name: the model to be used currently only solo_cnn exists
     load_weights: if true pretrained weights are loaded - only used in testing
-    pretrained_weights_path: if load_weights is true, load weights from this path
+    pretrained_weights_path: if load_weights is true load weights from this path
     epochs: number of training epochs
     batch_size: batch size in training
 
 
-run_bot_classifier_config.json:
+run_botaegis_config.json: configs for running botaegis over scraped tweets
 
 versionCfg: 
 		managerVersionId: the version of BotAegis
 
 DataCfg:
+    restore_checkpoints
     tweets_file_path: the path to the tweets over which BotAegis will be run
-    tokenizer_file_path: the path to the tokenizer which was saved during training, required to run over new tweets
+    tokenizer_file_path: the path to the tokenizer which was saved during training required to run over new tweets
     train_data_used_name: the description of the data used for training which we now use for reference
     data_out_dir: the data output directory
     data_out_file_path: specific data output file name. Note the above data_out_dir may now be redundant
 
 VectorisationParams:
-    max_features: the number of total unique words to use as a vectorised vocabulary,
+    max_features: the number of total unique words to use as a vectorised vocabulary
     max_len: the maximum length of a tweet to be considered. Tweets of length less than this are padded ot this length.
 
 ModelCfg:
     model_dir: path to directory of models
-    model_name: the model to be used, currently only solo_cnn exists
+    model_name: the model to be used currently only solo_cnn exists
     trained_weights_path: the path to the trained model weights
-    batch_size: batch size over which to run the data, is not very important but can slightly affect results
+    batch_size: batch size over which to run the data is not very important but can slightly affect results
+
+
+run_botometer_config.json: configs for running botometer 
+
+versionCfg: 
+    managerVersionId: the version of BotAegis
+
+
+DataCfg:
+    restore_checkpoints: Botometer takes a long time to run and has a hard limit of 17200 users checked 
+per day. It can also be risky to try and run it continuously over multiple days as it could end up charging
+you if you go over this limit. Therefore we can specify to save at a certain number of users checked. 
+If restore_checkpoints is true then botometer will start from the save point (specified below). If false 
+botometer will start from the first tweet. Use false for the initial run.
+    raw_tweets_dir: the directory containing the tweets to be checked
+    tweets_file_name_desc: the file containing the tweets to be checked
+    checkpoints_tweets_dir: the directory where to save the checked tweets (checkpoints) to
+    data_out_dir: the directory where to save the checked tweets (checkpoints) to
+
+APIkeysCfg:
+    twitter_api_keys_config: Botometer requires Twitter API keys. This is the path to where they are saved.
+Remember to keep them save and private (make sure to include them in .gitignore).
+    rapid_api_keys_config: Botometer requires RapidAPI keys. This is the path to where they are saved.
+Remember to keep them save and private (make sure to include them in .gitignore).
+
+BotometerCfg:
+    botometer_max_limit: the daily maximum limit of tweets to be checked. Do not make higher than 17200.
+    bot_check_count: the current number of daily checked tweets. If you keep track of this, you can manually
+set it here. But using the default of 0 is simplest - you can set the end point yourself to achieve the same goal.
+    checkpoints: save progress at this interval.
+    start_point: the initial saved daily start point. Use 0 for the first run and then change to whatever the previous
+end point was.
+    end_point: the final saved daily end point. 
+    fill_duplicates: if there are multiple tweets from the same account in a dataset, then if fill_duplicates is true
+Botometer will not run over them again. This saves time if there are many tweets from the same account.
+
+run_botometer_config.json requires twitter_keys_config.json and rapidapi_keys_config.json. They should be laid out as follows:
+
+twitter_keys_config: 
+
+{
+  "API_key": "xxx",
+  "API_secret": "xxx",
+  "access_token": "xxx",
+  "access_secret": "xxx"
+}
+
+rapidapi_keys_config.json:
+
+{
+  "API_key": "xxx"
+}
+
+
+run_sentiment_config.json: configs to run sentiment analysis (sentiment score and LDA decomposition) over tweets. 
+This can be done over either raw scraped tweets, or tweets checked with BotAegis/Botometer - it does not matter 
+since it only requires the tweet text.
+
+versionCfg: 
+    managerVersionId: the version of BotAegis
+
+
+DataCfg:
+    tweets_dir: the directory containing the tweets to be analysed
+    tweets_in_file_name_desc: the file containing the tweets to be analysed
+    data_out_dir: the directory where to save the analysed tweets
+    sentiment_tweets_out_file_name_desc: the file where to save the sentiment score analysed tweets
+    LDA_tweets_in_file_path: if sentiment score has already been run and the sentiment score analysed tweets 
+already saved, then this will load in from that file (saves time not running the sentiment analysis again)
+    LDA_tweets_out_file_name_desc: a description for the LDA analysed tweets output
+
+SentimentCfg:
+    get_sentiment: if true run the sentiment score analysis. If false don't run the sentiment score analysis 
+and just load in the file specified in LDA_tweets_in_file_path
+    run_LDA: if true run LDA analysis
+    bot_threshold: if labelled_data is false, consider accounts above this value to be bots. Not used 
+if labelled_data is true
+    labelled_data: if true use truth labels for human/bot. If false (for when real life data is used)
+discriminate bots using bot_threshold
+    bot_classifier: specify the bot classifier score to use as a threshold for human/bot discrimination.
+Current options are "botaegis", "botometer_astroturf" and "botometer_overall"
+    num_LDA_topics: the number of LDA topics to find
+
+
+
+
+
