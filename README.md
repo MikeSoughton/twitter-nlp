@@ -93,7 +93,29 @@ Okay; so when I came to add, commit and push new changes (without pulling again)
 So once we are up and running, the four commands that we would use are pull, add, commit and push. At least for the moment, since this is new to me, I'll keep separate backups somewhere else since git can be scary and you could end up overwriting progress if something goes wrong.
 
 #### Merging
-This is a bit more advanced and is done when... well it's a bit complicated and we won't use it now, but maybe we will use it later.
+This is a bit more advanced and is done when you are finishd working on something within your local development branch and wish to merge it with the local main branch, which can then be pushed to the remote main branch.
+
+First if you probably want to fetch any changes from the remote dev branch onto your local dev one. Therefore (from within your development branch) do
+```
+$ git fetch
+```
+Next if you probably want to get any changes made on the remote main branch onto your local one. Therefore (from within your development branch) do
+```
+$ git rebase origin/main
+```
+Note that we actually did all the work on the dev branch with no important changes made on the main branch so we did not bother with this step, but in most usual casees you will do it. Now move to the main branch with
+```
+$ git checkout main
+```
+Next if you probably want to get any changes made on the remote main branch onto your local one. Therefore do
+```
+$ git pull origin master
+```
+Note that we actually did all the work on the dev branch with no important changes made on the main branch so we did not bother with this step, but in most usual cases you will do it. Finally we can merge the branches with
+```
+$ git merge dev
+```
+which will merge all of the changes from dev into main. There may be conflicts here which need resolving. But if not, or once they are taken care of, you can add, commit and push to the remote main branch as usual.
 
 #### Undo commands
 
