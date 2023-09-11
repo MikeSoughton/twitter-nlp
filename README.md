@@ -99,5 +99,11 @@ This is a bit more advanced and is done when... well it's a bit complicated and 
 
 For when you mistakenly add, commit or push and want to undo them:
 - How to undo git add:
+  ```
+  $ git reset
+  ```
 - How to undo git commit:
+  ```
+  $ git reset HEAD~
+  ```
 - How to undo git push:

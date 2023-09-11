@@ -1,0 +1,24 @@
+{
+    "versionCfg": {
+		"managerVersionId": "botfinder v1"
+	},
+
+    "DataCfg":{
+        "tweets_dir":"data/assorted_training_data/",
+        "tweets_in_file_name_desc":"IRA-verified2019_labelled_full",
+        "data_out_dir":"data/analysed_tweets/",
+        "sentiment_tweets_out_file_name_desc":"IRA-verified2019_labelled_full_sentiment",
+        "LDA_tweets_in_file_path":"data/analysed_tweets/IRA-verified2019_labelled_full/IRA-verified2019_labelled_full_sentiment.csv",
+        "LDA_tweets_out_file_name_desc":"IRA-verified2019_labelled_full_sentimentLDA.csv."
+
+    },
+
+    "SentimentCfg":{
+        "get_sentiment":false,
+        "run_LDA":true,
+        "bot_threshold":0.75,
+        "labelled_data":true,
+        "bot_classifier":"botaegis",
+        "num_LDA_topics":20
+    }
+}

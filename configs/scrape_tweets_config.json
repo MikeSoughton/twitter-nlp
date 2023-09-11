@@ -1,0 +1,35 @@
+{
+    "versionCfg": {
+		"managerVersionId": "BotAegis v1"
+	},
+
+    "Mode":1,
+
+    "Mode1Cfg":{
+        "DataCfg":{
+            "data_out_dir":"data/scraped_tweets/",
+            "organisations_file_path":"data/organisations.csv",
+            "human_names_file_path":"data/human_names_dict.txt",
+            "prescraped_tweets_df_file_path":"data/scraped_tweets/rugby/tweets_raw_en_df_5000dailytweets_2022-02-10_to_2022-03-10.csv"
+        },
+
+        "ScrapingCfg":{
+            "scrape":false,
+            "keywords":["ukraine russia"],
+            "num_tweets_per_day":100,
+            "start_date":"2022-02-10",
+            "end_date":"2022-02-12",
+            "language":"en",
+            "user_created_after":null
+        }
+    },
+
+    "Mode2Cfg":{
+        "user_ids_dir":"data/verified-2019/",
+        "user_ids_file":"verified-2019.tsv",
+        "data_out_dir":"data/human_tweets/",
+        "data_out_file_desc":"verified_2019test",
+        "max_tweets_per_user":10,
+        "language":"en"
+    }
+}
