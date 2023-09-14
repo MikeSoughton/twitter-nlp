@@ -7,7 +7,7 @@ We also include a method of scraping tweets using [snscrape](https://github.com/
 
 Finally we include a method of performing sentiment analysis over tweets and also a Latent Dirichlet Allocation (LDA) decomposition to investigate the topics present within tweets.
 
-**Note that as of 30/06/2023 the scraping method using snscrape and the Botometer call are no longer functioning due to changes in the Twitter API**\
+**Note that as of 30/06/2023 the scraping method using snscrape and the Botometer call are no longer functioning due to changes in the Twitter API** \
 The core BotAegis code will remain functional, however, since it can work offline, only needing tweets scraped beforehand. You will therefore have to supply your own tweets. It appears that other versions of snscrape may be functional, although there may be limitations due to the change in Twitter API. 
 
 Botometer currently is not working at all due to the API changes, although they aim to fix the issue, they will still be hampered by the API changes.
