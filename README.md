@@ -42,7 +42,7 @@ conda env create --name <env name> -f environment.yml
 ```
 
 ## Code layout
-The main bulk of the code is found within in `tweetsearcher` and `botaegis` package directories. The former contains the classes used for scraping tweets and the latter contains the classes used for training and running BotAegis as well as for running Botometer and performing sentiment and topic analysis. The scripts in the main directory will instantiate the classes within the above package directories.
+The main bulk of the code is found within in `tweetsearcher` and `botaegis` package directories. The former contains the classes used for scraping tweets and the latter contains the classes used for training and running BotAegis as well as for running Botometer and performing sentiment and topic analysis. The scripts in the main directory will instantiate the classes within the above package directories and are the only scripts that need be run. A BIT ABOUT THEM HERE?
 
 ### tweetsearcher
 SCRAPING!
