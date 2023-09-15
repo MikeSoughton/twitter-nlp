@@ -40,3 +40,7 @@ These can be installed manually or via the conda yaml file using
 ```
 conda env create --name <env name> -f environment.yml
 ```
+
+## Code layout
+The main bulk of the code is found within in `BotAegis` folder, which contains five important classes: 
+- `TrainBotAegis` contained within `train_botaegis_classifier.py`
