@@ -42,19 +42,23 @@ conda env create --name <env name> -f environment.yml
 ```
 
 ## Code layout
+The main bulk of the code is found within in `tweetsearcher` and `botaegis` package directories. The former contains the classes used for scraping tweets and the latter contains the classes used for training and running BotAegis as well as for running Botometer and performing sentiment and topic analysis. The scripts in the main directory will instantiate the classes within the above package directories.
 
 ### tweetsearcher
+SCRAPING!
 
 ### botaegis
-The main bulk of the code is found within in `BotAegis` folder, which contains five important classes: 
+The `botaegis` folder, which contains five important classes: 
 - `TrainBotAegis` contained within `train_botaegis_classifier.py`
 - `RunBotAegis` contained within `run_botaegis_classifier.py`
 - `RunBotometer` contained within `run_botometer_classifier.py`
 - `GetSentiment` and `LDA_Decomposition` contained within `run_sentiment_analysis.py`
 
-SCRAPING!
-
 `TrainBotAegis` as the name suggests, is a class which contains all the methods used for training the BotAegis classifier, including reading in datasets and preparing them for training (including tokenization, padding and train-test-splitting). It will also build the model which is specified (see **models**)
 
 
 ### models
+
+### configs 
+
+### Other folders
