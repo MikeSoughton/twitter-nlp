@@ -44,3 +44,6 @@ conda env create --name <env name> -f environment.yml
 ## Code layout
 The main bulk of the code is found within in `BotAegis` folder, which contains five important classes: 
 - `TrainBotAegis` contained within `train_botaegis_classifier.py`
+- `RunBotAegis` contained within `run_botaegis_classifier.py`
+- `RunBotometer` contained within `run_botometer_classifier.py`
+- `GetSentiment` and `LDA_Decomposition` contained within `run_sentiment_analysis.py`
