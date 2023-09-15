@@ -33,7 +33,6 @@ nltk==3.7
 ipykernel==6.9.1
 seaborn==0.11.2
 snscrape==0.4.3
-
 ```
 
 These can be installed manually or via the conda yaml file using
