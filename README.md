@@ -15,3 +15,29 @@ Botometer currently is not working at all due to the API changes, although they 
 ## Overview
 
 A
+
+## Dependencies
+
+The code is run in `python3.8.5`. The following packages are required:
+
+```
+keras==2.4.3
+numpy==1.21.5
+pandas==1.4.2
+matplotlib==3.5.1
+tensorflow==2.4.1
+scikit-learn==1.0.2
+tqdm==4.64.0
+vadersentiment==3.3.2
+nltk==3.7
+ipykernel==6.9.1
+seaborn==0.11.2
+snscrape==0.4.3
+
+```
+
+These can be installed manually or via the conda yaml file using
+
+```
+conda env create --name <env name> -f environment.yml
+```
