@@ -43,7 +43,8 @@ conda env create --name <env name> -f environment.yml
 
 ## Code layout
 The main bulk of the code is found within in `tweetsearcher` and `botaegis` package directories. The former contains the classes used for scraping tweets and the latter contains the classes used for training and running BotAegis as well as for running Botometer and performing sentiment and topic analysis. The scripts in the main directory will instantiate the classes within the above package directories and are the only scripts that need be run. The scripts all call arguments from config files within `configs`. Inside `configs` is a text file describing the meanings and uses of the parameters within the config files. The scripts themselves are:
-- `scrape_tweets.py`: scrapes tweets using snscrape. There are two modes through which tweets can be scraped, either by keywords contained within tweets or by the user id. We predominately scraped using keywords for this project.
+- `scrape_tweets.py`: scrapes tweets using snscrape. This uses the `tweetsearcher` package directory to do so. There are two modes through which tweets can be scraped, either by keywords contained within tweets or by the user id. We predominately scraped using keywords for this project. One can search for tweets between a certain date range, and get a specified number of tweets from each day containing certain keywords. This script will also clean the tweets and filter out accounts not used by individuals (i.e. organisational accounts or 'good' bot accounts).
+- `train_botaegis.py`:
 
 ### tweetsearcher
 SCRAPING!
