@@ -47,9 +47,9 @@ These can be installed manually or via the conda yaml file using
 conda env create --name <env name> -f environment.yml
 ```
 
-If you want to scrape tweets or run Botometer you will also need a Twitter developer account to access the Twitter API. FINISH
+If you wish to scrape tweets you will need a Twitter developer account to access the Twitter API. FINISH
 
-RAPIDAPI
+If you wish to run Botometer you will also need to a RapidAPI account to interface with Botometer. Instructions can be found in [Botometer's API documentation](https://botometer.osome.iu.edu/api) which instruct you to sign up to their [RapidAPI endpoint](https://rapidapi.com/OSoMe/api/botometer-pro). There, after choosing a plan, you can get your RapidAPI key which can be downloaded and placed in `configs` to be read, making sure that the filename matches that in `run_botometer_config.json`.
 
 ## Code layout
 The main bulk of the code is found within in `tweetsearcher` and `botaegis` package directories. The former contains the classes used for scraping tweets and the latter contains the classes used for training and running BotAegis as well as for running Botometer and performing sentiment and topic analysis. The scripts in the main directory will instantiate the classes within the above package directories and are the only scripts that need be run. The scripts all call arguments from config files within `configs`. Inside `configs` is a text file describing the meanings and uses of the parameters within the config files. The scripts themselves are:
