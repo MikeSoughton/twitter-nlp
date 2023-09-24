@@ -47,7 +47,9 @@ These can be installed manually or via the conda yaml file using
 conda env create --name <env name> -f environment.yml
 ```
 
-If you wish to run Botometer you will need a Twitter developer account to access the Twitter API. You will have to put your API key, API secret, access token and access secret in a file inside `configs`, making sure that the filename matches that in `run_botometer_config.json` (see `config_description.txt` for details). You will also need to a RapidAPI account to interface with Botometer. Instructions can be found in [Botometer's API documentation](https://botometer.osome.iu.edu/api) which instruct you to sign up to their [RapidAPI endpoint](https://rapidapi.com/OSoMe/api/botometer-pro). There, after choosing a plan, you can get your RapidAPI key which can be downloaded and placed in `configs` to be read, making sure that the filename matches that in `run_botometer_config.json` (see `config_description.txt` for details).
+If you wish to run Botometer you will need a Twitter developer account to access the Twitter API. You will have to put your API key, API secret, access token and access secret in a file inside `configs`, making sure that the filename matches that in `run_botometer_config.json` (see `config_description.txt` for details). 
+
+You will also need to a RapidAPI account to interface with Botometer. Instructions can be found in [Botometer's API documentation](https://botometer.osome.iu.edu/api) which instruct you to sign up to their [RapidAPI endpoint](https://rapidapi.com/OSoMe/api/botometer-pro). There, after choosing a plan, you can get your RapidAPI key which can be downloaded and placed in `configs` to be read, making sure that the filename matches that in `run_botometer_config.json` (see `config_description.txt` for details).
 
 Twitter API keys should be stored within a json file named `twitter_keys_config.json`, with format
 ```
