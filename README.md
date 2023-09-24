@@ -49,6 +49,23 @@ conda env create --name <env name> -f environment.yml
 
 If you wish to run Botometer you will need a Twitter developer account to access the Twitter API. You will have to put your API key, API secret, access token and access secret in a file inside `configs`, making sure that the filename matches that in `run_botometer_config.json` (see `config_description.txt` for details). You will also need to a RapidAPI account to interface with Botometer. Instructions can be found in [Botometer's API documentation](https://botometer.osome.iu.edu/api) which instruct you to sign up to their [RapidAPI endpoint](https://rapidapi.com/OSoMe/api/botometer-pro). There, after choosing a plan, you can get your RapidAPI key which can be downloaded and placed in `configs` to be read, making sure that the filename matches that in `run_botometer_config.json` (see `config_description.txt` for details).
 
+Twitter API keys should be stored within a json file with format
+```
+{
+"API_key": "XXX",
+"API_secret": "XXX",
+"access_token": "XXX",
+"access_secret": "XXX"
+}
+```
+
+RapidAPI keys should be stored within a json file with format
+```
+{
+"API_key": "XXX"
+}
+```
+
 ## Code layout
 The main bulk of the code is found within in `tweetsearcher` and `botaegis` package directories. The former contains the classes used for scraping tweets and the latter contains the classes used for training and running BotAegis as well as for running Botometer and performing sentiment and topic analysis. The scripts in the main directory will instantiate the classes within the above package directories and are the only scripts that need be run. The scripts all call arguments from config files within `configs`. Inside `configs` is a text file describing the meanings and uses of the parameters within the config files. The scripts themselves are:
 - `scrape_tweets.py`: scrapes tweets using snscrape. This uses the `tweetsearcher` package directory to do so. There are two modes through which tweets can be scraped, either by keywords contained within tweets or by the user id. We predominately scraped using keywords for this project. One can search for tweets between a certain date range, and get a specified number of tweets from each day containing certain keywords. This script will also clean the tweets and filter out accounts not used by individuals (i.e. organisational accounts or 'good' bot accounts). The script will output csv files in a newly created directory named `data` generated from saving dataframes containing the tweets.
