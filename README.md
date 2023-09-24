@@ -22,7 +22,7 @@ The field of bot detection is a constantly changing and evolving one, with those
 A
 BOT AND HUMAN DATASETS
 
-## Dependencies
+## Dependencies and Setup
 
 The code is run in `python3.8.5`. The following packages are required:
 
