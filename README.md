@@ -23,13 +23,10 @@ Instead of looking at account user characteristics like Botometer does, BotAegis
 
 Once trained, we applied BotAegis to tweets mentioning 'Ukraine' or 'Russia' (in English language) after the advent of the invasion, looking to investigate the operation of bots within this sphere. We find a number of accounts which are predicted to be bots based on their tweets. Note that this does mean that these accounts *are* bots, just that their speech patterns are similar to that of the bots which we trained on. There is always the possibility of obtaining false positives - genuine accounts which are flagged as being bots. This is always a concern when using Machine Learning and ethical use of it should be considered alongside traditional authentication procedures so that genuine people are not penalised. We performed some manual checks on accounts in an attempt to verify if an account is genuinely a bot or human, for example inspecting their post history, whether they use their own profile picture or a stock image taken from the web, the lack of friends/followers etc., however we did not have the resources to check this properly. We are confident that at least a significant number of flagged tweets appear to come from bot accounts. We further compared our results alongside Botometers - whilst both Botometer and BotAegis may overfit in different ways, if an account scores highly for both of them then it is definetely worthy of suspicion. We also noted that that whilst some of the accounts predicted to be bots appear to be harmless and are likely false positives, we also find other accounts predicted to be bots, whilst their user characteristics suggest that they are genuine people, are engaging in speech similar to that of bots. That is not a bad thing per se, bots after all are attempting to mimic humans, but there is a fine line between hate speech commited by bots and hate speech commited by humans, which is something worth looking into in the future.
 
-One thing that we do notice is that we are much more likely to predict a tweet to be a bot tweet if it mentions things similar 
-
-
-
 Sentiment analysis
 
-WE also overfit
+One thing that we do notice is that we are much more likely to predict a tweet to be a bot tweet if it mentions things similar to topics within the training dataset, for example
+
 
 The field of bot detection is a constantly changing and evolving one, with those who make bots able to modify their approach should they need to. Furthermore, since every and all topics are talked about on social media, it (at present) seems an almost impossible task to detect all bots (unless companies such as Twitter are capable of doing further identification checks required to sign up). It can seem therefore that researchers are always two steps behind the bot-makers 
 
