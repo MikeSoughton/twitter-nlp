@@ -99,7 +99,11 @@ The `botaegis` package directory contains five important classes:
 
 `TrainBotAegis` as the name suggests, is a class which contains all the methods used for training the BotAegis classifier, including reading in datasets (there are options for either the IRA or the Twibot bot datasets as well as the human dataset, allowing for easy setup of different data formats) and preparing them for training (including tokenization, padding and train-test-splitting). It will also build the chosen model (see [**models**](#models)) before training with it and finally testing. The trained model weights as well as the tokenizer are saved within `models`. 
 
-`RunBotAegis` allows for running the trained BotAegis model on your desired Tweet dataset. Within the class there are methods for reading in and preparing this data, as well as the model, trained model weights and tokenizer, before running the model and saving the results as a new tweet dataset containing the BotAegis bot scores as well as all the previous data. 
+`RunBotAegis` allows for running the trained BotAegis model on your desired Tweet dataset. Within the class there are methods for reading in and preparing this data, as well as the model, trained model weights and tokenizer, before running the model and saving the results as a new tweet dataset within `data` containing the BotAegis bot scores as well as all the previous data. 
+
+`RunBotometer` allows for running the Botometer API over your desired Tweet dataset. The class first will be called to read in the tweet dataset, however since Botometer works by using the account username and not the tweet content, we only need the account names. Thefore we have methods to get a list of unique account names and prepare them for the Botometer API, to setup the Botometer API (requring your Twitter API keys and RapidAPI keys), before running the Botometer API and saving the outputted dataset within `data`. Note that in our workflow we ran the Botometer code before running the BotAegis code over the same dataset, though it does not matter in which order you run them. 
+
+`GetSentiment`
 
 
 ### models
