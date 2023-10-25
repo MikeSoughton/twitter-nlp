@@ -97,7 +97,7 @@ The `botaegis` package directory contains five important classes:
 - `RunBotometer` contained within `run_botometer_classifier.py`
 - `GetSentiment` and `LDA_Decomposition` contained within `run_sentiment_analysis.py`
 
-`TrainBotAegis` as the name suggests, is a class which contains all the methods used for training the BotAegis classifier, including reading in datasets and preparing them for training (including tokenization, padding and train-test-splitting). It will also build the model which is specified (see **models**)
+`TrainBotAegis` as the name suggests, is a class which contains all the methods used for training the BotAegis classifier, including reading in datasets and preparing them for training (including tokenization, padding and train-test-splitting). It will also build the model which is specified (see [**models**](models))
 
 
 ### models
