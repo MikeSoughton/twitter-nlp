@@ -82,10 +82,16 @@ The main bulk of the code is found within in `tweetsearcher` and `botaegis` pack
 - `run_sentiment.py`: runs sentiment analysis and LDA analysis over the tweets. This uses the `GetSentiment` class and `LDA_Decomposition` classes within `botaegis`. Either the sentiment analysis or LDA decomposition can be run seperately or both can be run together. The inputs should be the tweet csv files outputted after running BotAegis and Botometer (the sentiment analysis code does not require bot scores, but the LDA decompostion takes the bot scores to perform further analysis. The sentiment analysis code will output a new file with the sentiment scores and the LDA analysis code will output a new file with conversation topic numbers, as well as html files showing a visualisation of the topics.
 
 ### tweetsearcher
-SCRAPING!
+The `tweetsearcher` package directory contains two important classes:
+-  `GetTweetsByKeyword` contained within `scrape_by_keyword.py`
+-  `GetTweetsById` contained within `scrape_by_id.py`
+
+`GetTweetsByKeyword` as the name suggests, is a class which will scrape for Tweets containing certain keyword(s). Given a list of keywords, a start date, end date, number of tweets per day and some other parameters such as language and output file location, it runs snscrape to output a tweets dataframe csv file containing the tweets as well as their corresponding metadata. It also will clean out organisational tweets and tweets from accounts with non-human names.
+
+`GetTweetsById`, unsurprisingly, is a class which will scrape for Tweets from specific user ids. Given a list of user ids, max number of tweets per user and a few other input parameters, it runs snscrape to output a tweets dataframe csv file containing the tweets as well as their corresponding metadata. Since we only used this code to download tweets from already known human accounts, this class does not need to filter out organisational tweets and tweets from accounts with non-human names.
 
 ### botaegis
-The `botaegis` folder, which contains five important classes: 
+The `botaegis` package directory contains five important classes: 
 - `TrainBotAegis` contained within `train_botaegis_classifier.py`
 - `RunBotAegis` contained within `run_botaegis_classifier.py`
 - `RunBotometer` contained within `run_botometer_classifier.py`
