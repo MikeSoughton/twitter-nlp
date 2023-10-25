@@ -88,7 +88,7 @@ The `tweetsearcher` package directory contains two important classes:
 
 `GetTweetsByKeyword` as the name suggests, is a class which will scrape for Tweets containing certain keyword(s). Given a list of keywords, a start date, end date, number of tweets per day and some other parameters such as language and output file location, it runs snscrape to output a tweets dataframe csv file containing the tweets as well as their corresponding metadata. It also will clean out organisational tweets and tweets from accounts with non-human names.
 
-`GetTweetsById`, unsurprisingly, is a class which will scrape for Tweets from specific user ids. Given a list of user ids, max number of tweets per user and a few other input parameters, it runs snscrape to output a tweets dataframe csv file containing the tweets as well as their corresponding metadata. Since we only used this code to download tweets from already known human accounts, this class does not need to filter out organisational tweets and tweets from accounts with non-human names.
+`GetTweetsById`, unsurprisingly, is a class which will scrape for Tweets from specific user ids. Given a list of user ids, max number of tweets per user and a few other input parameters, it runs snscrape to output a tweets dataframe csv file containing the tweets as well as their corresponding metadata. Since we only used this code to download tweets from already known human accounts from the Reddit dataset, this class does not need to filter out organisational tweets and tweets from accounts with non-human names.
 
 ### botaegis
 The `botaegis` package directory contains five important classes: 
