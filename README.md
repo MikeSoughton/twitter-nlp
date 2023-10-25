@@ -103,7 +103,9 @@ The `botaegis` package directory contains five important classes:
 
 `RunBotometer` allows for running the Botometer API over your desired Tweet dataset. The class first will be called to read in the tweet dataset, however since Botometer works by using the account username and not the tweet content, we only need the account names. Thefore we have methods to get a list of unique account names and prepare them for the Botometer API, to setup the Botometer API (requring your Twitter API keys and RapidAPI keys), before running the Botometer API and saving the outputted dataset within `data`. Note that in our workflow we ran the Botometer code before running the BotAegis code over the same dataset, though it does not matter in which order you run them. 
 
-`GetSentiment`
+`GetSentiment` compliments the bot analyses through providing information on the setiment of tweets. It allows for reading in of the same dataset, preparing it through removing stopwords, punctuation, making tweets lowercase, lemmatization and tokenziation, before performing sentiment analysis with `vaderSentiment.vaderSentiment.SentimentIntensityAnalyzer`. The dataset containing sentiment scores is outputted within `data`.
+
+`LDA_Decomposition` compliments the analyses further through providing information on the topics of tweets. The data is read and prepared in a similar way, before `sklearn.feature_extraction.text.CountVectorizer` is used to vectorize the tweets (which we do for all human and bot tweets with the option to run using a) truth data b) BotAegis scores with some threshold, c) Botometer astroturf scores with some threshold, d) Botometer overall scores with some threshold). Then an LDA decomposition is performed using `sklearn.decomposition.LatentDirichletAllocation` to find the $N$ most common topics within the tweets and the results are saved within `data`. Finally there is the option to visualise the results using `pyLDAvis.sklearn.prepare` (which do look very pretty!).
 
 
 ### models
