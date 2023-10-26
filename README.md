@@ -108,8 +108,10 @@ The `botaegis` package directory contains five important classes:
 `LDA_Decomposition` compliments the analyses further through providing information on the topics of tweets. The data is read and prepared in a similar way, before `sklearn.feature_extraction.text.CountVectorizer` is used to vectorize the tweets (which we do for all human and bot tweets with the option to run using a) truth data b) BotAegis scores with some threshold, c) Botometer astroturf scores with some threshold, d) Botometer overall scores with some threshold). Then an LDA decomposition is performed using `sklearn.decomposition.LatentDirichletAllocation` to find the $N$ most common topics within the tweets and the results are saved within `data`. Finally there is the option to visualise the results using `pyLDAvis.sklearn.prepare` (which do look very pretty!).
 
 ### models
-The CNN BotAegis classifier is found within `models`, specifically within `solo_cnn.py`. This model solo_cnn consists of 14 Conv1d layers, four pooling layers, two Dense layers as well as dropouts.     We call the model with a helper function in the init file so that new models can easily be added and used in the future with no additional changes to the codebase required
+The CNN BotAegis classifier is found within `models`, specifically within `solo_cnn.py`. This model ,solo_cnn, consists of 14 Conv1d layers, four pooling layers, two Dense layers as well as dropouts and using n-grams and skip-grams. We call the model with a helper function in the init file so that new models can easily be added and used in the future with no additional changes to the codebase required. Once trained, weights and the tokenizer are saved with an appropriate name within `checkpoints`. 
 
 ### configs 
+All config files are found here. See the txt file within for descriptions of their parameters.
 
 ### Other folders
+We also have some notebooks used for early exploration and performing quick analyses within `notebooks` and also various odd scripts within `misc`. You should not need to use the files but they can be used for further insight into the data and may be useful for certain tasks.
